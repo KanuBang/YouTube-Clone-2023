@@ -3,11 +3,11 @@ const PORT = 8081;
 const app = express();
 
 const handleHome =  (req, res, next) => {
-    return res.end("Home")
+    return res.send({msg: "home"})
 }
 
 const handleLogin = (req, res, next) => {
-    return res.end("Login")
+    return res.end("<h1>Login</h1>")
 }
 
 app.get("/", handleHome)
