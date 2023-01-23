@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "NodeJS/Express/Mongo/ES6",
   "scripts": {
-    "start": "node index.js"
+    "start": "node index.js",
+    "dev": "nodemon --exec babel-node index.js"
   },
   "repository": {
     "type": "git",
@@ -20,6 +21,8 @@
   },
   "devDependencies": {
     "@babel/core": "^7.20.12",
-    "@babel/preset-env": "^7.20.2"
+    "@babel/node": "^7.20.7",
+    "@babel/preset-env": "^7.20.2",
+    "nodemon": "^2.0.20"
   }
 }
