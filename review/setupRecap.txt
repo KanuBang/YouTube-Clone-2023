@@ -1,0 +1,15 @@
+package.json은 프로젝트에 대한 정보가 담긴 text 파일이다.
+모든 것은 package.json으로부터 시작되기에 가장 중요하다.
+script에는 실행시키고자 하는 명령어를 지정할 수 있다.
+dependencies는 프로그램을 실행하기 위해 필요한 모듈이다.
+devDependencies는 개발자에게 편의성을 제공하는 모듈이다
+물론, 둘다 모듈에 저장된다
+노드몬은 devDependencies이다. 파일에 변화가 생길때마다 감지하여 재실행시킨다.
+babel 또한 devDependencies이다. 최신 js를 nodeJS가 이해할 수 있도록 해준다
+babel을 다루기 위해선s babel.config.json 파일이 필요하고
+preset은 최신 js를 사용하게 해주는 플러그인이다.
+
+dependencies와 devDependencies에 모듈 정보가 있으므로 데이터 전송이나 업로드시에는
+모듈 파일과 lock.json를 제외시킨다
+
+npm i 하면 package.json의 dependencies와 devDependencies을 참고하여 자동으로 같은 버전으로 다운된다.
