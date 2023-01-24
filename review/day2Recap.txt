@@ -45,3 +45,29 @@ export default 할때는 내가 원하는 이름을 import할 수 있다.
 ______________________________________
 ctrl + click => 해당 주소 파일로 이동
 __________________________________________
+videoRouter.get("/upload", upload);
+videoRouter.get("/:id", see);
+videoRouter.get("/:id/edit", edit );
+videoRouter.get("/id/delete",deleteVideo);
+
+:는 url에 변수를 포함시키게 해준다.
+:덕분에 express가 :뒤에 나오는 것은 변수라는 것을 인지할 수 있다.
+
+"그렇다면 url에 왜 변수를 사용해야 할까?"
+
+만약 /student/1, /student/2, student/3 ... 이렇게 라우터를 만들면
+/student/100까지 100개의 라우터를 만들어야 된다. 너무 비효율적이다.
+url에 변수를 사용해서 /student/:id로 하면 이 문제가 단번에 해결된다.
+그래서 url에 변수를 사용하는 것이다.
+
+
+"파라미터가 포함된 url의 라우터는 뒤로 보내자"
+범위가 넓은 라우터가 범위가 좁은 라우터보다 앞에 오면 본래 코드의 의도가 무너질 수 있다.
+그렇기에 범위 넓은 라우터는(변수가 포함된 URL) 뒤로 보내자.
+
+"req.params"
+req.params는 라우터의 매겨변수이다.
+
+예를 들어 /:id/:name 경로가 있으면 
+":id"속성과 ":name"속성을 
+req.params.id, req.params.name으로 사용할 수 있다.
