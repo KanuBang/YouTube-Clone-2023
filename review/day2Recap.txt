@@ -71,3 +71,15 @@ req.params는 라우터의 매겨변수이다.
 예를 들어 /:id/:name 경로가 있으면 
 ":id"속성과 ":name"속성을 
 req.params.id, req.params.name으로 사용할 수 있다.
+_____________________________
+익스프레스 정규식은 문자열로부터 특정 정보를 추출해내는 방법이다.
+https://expressjs.com/en/guide/routing.html
+을 참고하자
+
+/ab*cd => absdfsdcd, abwqeqwccd ... abanythingcd => allowed
+/abc?de => abcde, abde => optional => allowed
+/a(bc)?de => abcde, ade => allowed
+/ab+de => abde,abbde,abbbbde => allowed
+
+\\d+ => digit만 끝까지 허용한다.
+\\w+ => word만 끝까지 허용한다??? 맞나?
