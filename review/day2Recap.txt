@@ -1,0 +1,22 @@
+morgan 은 요청(Request)과 응답(Response)에 대한 정보를 콘솔에 기록한다.
+1.next가 있기에 미들웨어이다
+2.미들웨어를 리턴한다.
+3.설정이 필요한 미들웨어이다.
+_____________________________
+express.router()은 라우팅을 깔끔하게 해준다.
+즉, 최적의 경로를 선택하게 해준다
+
+라우팅이란 url의 정의와 url이 클라이언트 요청에 응답하는 방식입니다.
+어떤 네트워크 안에서 데이터를 통신할 때 최적의 경로를 선택하는 과정입니다.
+
+글로벌라우터 => 전역 경로
+유저라우터 => 유저를 연결
+비디오라우터 => 비디오를 연결
+
+1. app.use("/videos", videoRouter); => 비디오 라우터
+2. const videoRouter = express.Router(); => 비디오 라우터의 라우팅을 가능하게 해줌
+3. videoRouter.get("/watch", handleWatchVideo); => 비디오 라우터에서 /watch에대한 get 요청 처리를
+4. const handleWatchVideo = (req, res) => res.send("watch Videos") 처리를
+
+즉, use로 라우터를 열고 router()메소드로 라우팅한다.
+
