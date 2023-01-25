@@ -1,0 +1,34 @@
+export VS export default
+
+export: 이름이 정해져서 규칙성이 생김. 혼동 없음, 자유로운 네이밍을 하지 못함
+export default: 자유로운 네이밍 가능, 이름이 정해지지 않아서 규칙성이 없음. 혼동 야기 가능성
+
+=> 그래도 이름이 같은게 편하지 않을까?
+
+README.md
+=> 제품의 기능이나 사용법 등에 관해 손쉽게 참조할 수 있도록 되어 있다.
+______________________________________________________________________________________
+"app.set("views", process.cwd() + "/src/views")"
+컨트롤러에서 express에게 home.pug를 렌더링 해달라고 할때 
+express는 현재 작업중인 디렉토의 views 폴더 안에서 home.pug를 찾는다.
+이것은 디폴트 행동이다.
+
+하지만, 우리의 views 폴더는 src 폴더 안에 있다.
+그래서 해당 코드는 "express가 pug 파일을 찾는 위치를 디폴트 값에서 다시 설정하는 과정이다."
+
+"include partials/footer.pug + pug의 강점 1: partials"
+
+만약 37만개의 pug에 같은 footer이 있다고 해보자.
+근데 어느날 그 footer이 같은 내용으로 업데이트 해야 한다고 한다.
+가장 간단한 방법은 footer을 일일이 수정해서 37만개의 pug에 복붙하는 것이다.
+이렇게 되면 'UPDATE'가 너무 어렵다
+
+"pug는 반복되는 것을 partial화 시켜 모듈로 만들어 include 할 수 있도록 한다."
+만약 위와 다르게 37만개의 파일 각각에 partial화 된 footer 모듈이 include 되어 있다면
+37만개의 파일의 footer을 업데이트 할때 일일이 37만개의 파일에 들어가 copy & paste 하는 것이 아니라
+그냥 partial화 된 footer만 업데이트 하면 자동으로 37만개의 파일도 업데이트 된다.
+
+즉, "pug의 partial화된 module을 include 함으로써 CODE MANAGEMENT가 엄청난게 편해졌다."
+
+
+
