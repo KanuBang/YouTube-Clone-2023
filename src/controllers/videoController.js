@@ -1,6 +1,12 @@
+const fakeUser = {
+    username: "chanwu",
+    loggedIn: true
+};
+
 export const trending = (req, res) => {
-    res.render("home", {pageTitle: "Home(5.4 testing)"})
+  res.render("home", { pageTitle: "Home", fakeUser });
 }
+
 export const see = (req, res) => {
     res.render('watch', {pageTitle: "videos/watch(5.4 testing)"})   
 }

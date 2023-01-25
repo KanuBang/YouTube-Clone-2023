@@ -6,15 +6,14 @@
 /search -> Search
 => 글로벌 라우터: 홈에서 바로 갈 수 있는 페이지들
 
+/users/:id -> See User
+/users/logout -> Log Out
 /users/edit -> Edit user
 /users/delete -> Delete user
 => 유저 라우터: 유저에서 갈 수 있는 페이지들
 
-/videos/watch -> Watch Video
-/videos/edit -> Edit Video
-/videos/delete -> Delete Video
-/videos/comments -> Comment on a video
-/videos/comments/delete -> Delete A
+/videos/:id -> See Video
+/videos/:id/edit -> Edit Video
+/videos/:id/delete -> Delete Video
+/videos/upload -> Upload Video
 => 비디오 라우터: 비디오에서 갈 수 있는 페이지들
-
-Routing refers to how an application’s endpoints (URIs) respond to client requests.
