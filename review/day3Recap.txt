@@ -121,3 +121,65 @@ else를 이용해 리스트가 비었음을 알릴 수 있다.
 6. each의 변수에 list안에 있는 요소들이 차례대로 들어감 
 
 "each문 그리고 each문과 짝을 이루는 else는 PUG이다."
+
+______________________________________________________________________________________
+"mixin도 결국에는 반복되는 코드를 복붙을 최소화하는 목적으로 사용된다."
+
+"mixin pug의 함수로써 반복되는 코드를 모듈화, 컴포넌트화 한다."
+
+"mixin pug의 함수로써 데이터를 받고 
+ 받은 데이터를 이용해 고정된 구정에 데이터를 넣고
+ 결과물을 리턴한다."
+ 
+=>일반적인 파셜은 정적이다. 즉, 구조와 내용이 고정되어 있다.
+하지만, mixin은 동적이다. 구조는 같으나
+데이터를 받아 내용을 만들기에 동저이다.
+
+"mixin include 주의점"
+mixin도 included 되는 파일의 위치를 기점으로 mixin 파일을 찾는다."
+include mixins/video
+
+
+"코드 설명"
+1. include mixins/video => mixin 파일 video.pug를 사용하겠다.
+    each potato in videos
+        +video(potato)
+    else
+        li Sorry nothing found.
+______________________________________________________________________________________
+    mixin video(info)
+    div
+        h4=info.title
+        ul
+            li #{info.rating}/5.
+            li #{info.comments} comments.
+            li Posted #{info.createdAt}.
+            li #{info.views} views.
+
+2.컨트롤러부터 받은 videos의 배열 안의 요소들을 차례대로 potato에 넣는다.
+그리고 각 리스트의 요소들이 pug의 mixin 함수인 video의 변수로 들어간다.
+
+3. 전달받은 리스트의 요소에서 데이터를 추출하여 
+fixed된 html 구조에 데이터를 넣고 이 pug를 리턴한다.
+
+4. 리스트의 요소가 끝날때까지 3을 반복한다.
+
+5. 결과적으로 home.pug에는
+       h4=info.title
+        ul
+            li #{info.rating}/5.
+            li #{info.comments} comments.
+            li Posted #{info.createdAt}.
+            li #{info.views} views.
+    이런 형식에 데이터가 채워진 것들이 삽입되었다.
+
+6. pug는 이를 html로 렌더링하여 컨트롤러에 리턴하고
+7. 컨트롤러는 이 html을 브라우저에 리턴하고
+7. 브라우저는 html을 클라이언트의 창에 띄운다.
+
+
+
+
+
+
+
