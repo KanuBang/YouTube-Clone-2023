@@ -184,5 +184,22 @@ fixed된 html 구조에 데이터를 넣고 이 pug를 리턴한다.
 "partial이 include 하는 것처럼 mixin file도 include 되어야 mixin 함수를 쓸 수 있다."
 
 
+______________________________________________________________________________________
+6.1 실행과정
+
+1) mixin 파일에서 링크 태그의 href는 /videos/${video.id} 이다.
+2) 즉 a태그인 video.tile을 클릭하면 /videos/1(video.id)로 라우팅 된다.
+3) /videos/1 은 videoRouter.get("/:id(\\d+)", see); 라우터에 걸려서 see 컨트롤러가 실행된다
+4) export const see = (req, res) => {
+    const {id} = req.params;
+    const video = videos[id - 1]
+    res.render('watch', {pageTitle: `Watching ${video.title}`})   
+}
+의 see 컨트롤러에서 watch 페이지를 렌더링 함과 동시에
+id와 video에 대한 정보를 가져와 렌더링 데이터 변수로 전달한다.
+
+5) pug가 4)에서 얻은 데이터 변수를 참고해 watch.pug를 html로 렌더링 하고 리턴한다.
+6) html로 변환된 watch.pug를 브라우저에게 응답으로 보낸다
+
 
 
