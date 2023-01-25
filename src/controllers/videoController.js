@@ -1,10 +1,19 @@
-const fakeUser = {
-    username: "chanwu",
-    loggedIn: true
-};
-
 export const trending = (req, res) => {
-  res.render("home", { pageTitle: "Home", fakeUser });
+
+  const videos = [
+    
+    {
+        title:"KOREA"
+    },
+    {
+        title:"JAPAN"
+    },
+    {
+        title:"CHINA"
+    }
+  ];
+  
+  return res.render("home", {pageTitle: "Home", videos});
 }
 
 export const see = (req, res) => {
