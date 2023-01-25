@@ -1,8 +1,8 @@
 export const trending = (req, res) => {
-    res.render("home")
+    res.render("home", {pageTitle: "Home(5.4 testing)"})
 }
 export const see = (req, res) => {
-    res.render('watch')   
+    res.render('watch', {pageTitle: "videos/watch(5.4 testing)"})   
 }
 
 export const edit = (req, res) => {

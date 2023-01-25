@@ -32,5 +32,52 @@ express는 현재 작업중인 디렉토의 views 폴더 안에서 home.pug를 �
 
 + include는 인클루드 당하는 파일의 위치에서 시작된다
 + pug의 강점은 간단한 html + js포함가능 +html의 자유로운 수정이다.
+_____________________________
 
+"pug가 상속과 확장을 사용함으로써 html의 자유로운 수정이 가능하다."
 
+먼저 상속되는 pug 파일인 base.pug를 만든다.
+base.pug는 템플릿으로써 상속받은 pug 파일의 구조를 상속해준다.
+=> 코드의 양을 줄일 수 있다.
+
+base.pug와 같은 구조인 다른 pug 파일들이 이를 extends 한다.
+extends 한다는 말은 구조가 잡힌 템플릿을 상속받고
+그 템플릿을 기반으로 자신만의 pug 파일로 확장한다는 말이다.
+=> 코드의 업데이트가 편해진다.
+
+base.pug는 content는 베이스에 무언 가를 넣을 수 있는 공간이다.
+base.pug를 상속받은 pug 파일은 content에 자신 만의 것을 넣으면서
+기본 템플릿을 확장시킨다.
+
+즉, 블락은 템플릿의 창문이다.
+
+_____________________________
+"블락은 html 태그를 업데이트 한다. 좀 더 작은 단위의 수정은 변수 템플릿을 이용한다."
+
+1. 컨트롤러가 렌더링한다.
+2. 렌더링은 어떠한 상태에 도달할 수 있도록 만드는 것을 의미한다.
+3. res.render은
+Renders a view and sends the rendered HTML string to the client.
+뷰를 어떠한 상태로 도달하도록 만들다
++ "클라이언트에게 html 상태로 도달하도록 만들어지는 것을 전달한다."
+4. #{} pug에게 js 코드임을 알린다.
+5. #{var}는 pug에게 js 변수임을 알린다.
+
+즉, export const trending = (req, res) => {
+    res.render("home", {pageTitle: "Home(5.4 testing)"})
+}
+
+는 이런 의미이다.
+
+0. 사용자는 localhost:8081/ 요청을 브라우저를 통해 서버에게 보낸다.
+1. 포트 8081이 이 요청을 listening 했다.
+2. app.use('/')가 글로벌 라우터로써 url 시작 기점이 된다.
+3. 라우팅되어 trending이라는 컨트롤러에 도달한다.
+4. trending이라는 컨트롤러는 home.pug를 html로 렌더링할 것이고 variables를 전달한다.
+5. express는 server.js에서 set된 views의 경로를 확인하고 home.pug를 찾아간다.
+6. express는 views engine으로 pug를 사용하도록 설정됬기에 home.pug를 렌더링할때 pug를 쓴다.
+7. pug는 include 된 것, 상속된 base, extending 하는 block, 컨트롤러로 부터 받은 변수까지 모두 이해하여
+pug를 html로 레던링하여 최종적으로 trending 컨트롤러에게 리턴한다.
+8. 렌더링 성공한 html을 컨트롤러가 받아서 브라우저에게 응답으로 보낸다 
+9. 브라우저가 html을 이해한다.
+10. 사용자의 화면에 html이 뜬다.
