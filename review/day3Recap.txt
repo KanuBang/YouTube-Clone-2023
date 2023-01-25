@@ -178,7 +178,10 @@ fixed된 html 구조에 데이터를 넣고 이 pug를 리턴한다.
 7. 브라우저는 html을 클라이언트의 창에 띄운다.
 
 
-
+결국 pug의 mixin 함수 목적은
+"구조가 fix된 반복되는 것에다가 데이터를 넣어 리턴함으로써 반복되는 코드의 양을 줄여 copy&paste와 코드의 크기를 줄인다."
+"즉, partial보다 upgrade된 smart partial function이다." 
+"partial이 include 하는 것처럼 mixin file도 include 되어야 mixin 함수를 쓸 수 있다."
 
 
 
