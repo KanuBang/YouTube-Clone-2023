@@ -200,3 +200,31 @@ async, await은 무언가가 실행되고 완료될 때까지 기다리고
 콜백은 그 대신에 error을 인수로 받는다.
 async는 error를 인수로 받지 않기에
 try-catch문으로 에러 처리를 해야 한다.
+
+
+3. return은 그저 함수를 끝내는 기능. function에 주의를 기울이자.
+res.end가 함수를 끝내는게 아니다. 이거는 그저 응답을 끝내는 거다.
+함수를 끝내는 것은 return이다.
+
+실질적으로 요청과 응답을 처리하는 것은 express의 req, res의 메소드이고
+함수를 끝내는 것은 return 이기에
+
+function에 주의를 기울이자
+
+4. 1가지 요청에 응답을 2번 보내지 말자.
+export const home = async (req, res) => {
+    console.log("start")
+    const videos = await Video.find({});
+    console.log("finished")
+    res.send("fuck")
+    return res.render("home", {pageTitle:"HOME", videos})
+}
+
+하면 Cannot set headers after they are sent to the client 에러가 뜬다.
+res.send("fuck")으로 응답했는데 왜 또 응답하냐 이거다.
+
+이걸 반대로 다음과 같이 순서만 바꾼다면
+  return res.render("home", {pageTitle:"HOME", videos})
+   res.send("fuck")
+
+에러가 뜨지 않는다. 왜냐? return으로 함수가 종료되었기 때문이다.

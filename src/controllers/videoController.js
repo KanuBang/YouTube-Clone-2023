@@ -3,6 +3,9 @@ import Video from "../models/video";
 /*
 console.log("start")
 Video.find({}, (error, videos) => {
+  if(error){
+    return res.render("server-error")
+  }
   return res.render("home", { pageTitle: "Home", videos });
 });
 console.log("finished")
@@ -13,6 +16,7 @@ export const home = async (req, res) => {
     const videos = await Video.find({});
     console.log("finished")
     return res.render("home", {pageTitle:"HOME", videos})
+    res.send("it will be ingnored. That's because there is return")
 }
 
 export const watch = (req, res) => {
