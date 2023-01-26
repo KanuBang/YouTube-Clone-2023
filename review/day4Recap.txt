@@ -1,0 +1,17 @@
+1. /가 없다면 상대경로, /가 있다면 절대 경로 경로
+a(href="/video/edit")--->localhost:4000/video/edit
+a(href="video/edit")--->localhost:4000/videos/video/edit
+a(href=`${video.id}/edit`)--->localhost:4000/videos/1/edit
+
+2. http 메소드 get과 post의 차이
+get => 단순 정보 요청 / db 수정 의도 없음 => 검색
+post => db 업데이트 의도 포함 => 비디오 업로드
+
+3. form의 method 속성
+기본 값은 get이다.
+
+4. action은 데이터를 원하는 url로 보낸다
+action이 없는 것은 현재 파일 경로를 따라간다
+
+
+6. ternary operator는 if else문을 간단히 만든다.
