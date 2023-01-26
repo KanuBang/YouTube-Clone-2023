@@ -131,3 +131,50 @@ const Video = mongoose.model("Video", videoSchema)
 즉, 지금 server.js에서는
 mongoose로 js와 mongodb를 연결하고 커넥션을 생성했다.
 그리고 비디오 모델까지 생성했다.
+
+______________________________________________________________________________________
+
+1. server.js에는 server와 관련된 것만 넣는다.
+2. callback이란 무언가가 발생하고 난 다음(then) 호출되는 함수이다
+
+3. Video.find({}, (error, videos) => {});
+몽구스가 Video.find({}) db에 요청한다. (몽구스가 db에 전체검색 요청)
+그리고 db가 응답하면 콜백을 실행한다 (db가 몽구스에게 응답)
+몽구스는 err과 vdeo의 값을 콜백 (db가 응답한 것을 몽구스가 error와 함께 콜백에 전달)
+
+몽구스가 db에게 전체 검색을 요청
+-> db가 응답
+-> db가 응답한 것을 error와 함께 콜백에 넣어줌
+-> 우리는 콜백에 온 정보로 data를 관리함
+
+즉, find를 실행시키고 
+=> 모든 값을 검색하고 ( { } 모든 값)
+=> 콜백에 err과 vidoes를 불러왔다
+
+4. 중요한 거는 비동기이다.
+export const home = (req, res) => {
+  console.log("Start");
+  Video.find({}, (error, videos) => {
+    console.log("Finished");
+    console.log(error)
+    console.log(videos)
+    return res.render("home", { pageTitle: "Home", videos });
+  });
+  console.log("I finish first");
+}
+의 결과는 
+
+Start
+I finish first
+Finished
+null
+[]
+
+이다. 순차적으로 실행되지 않았다.
+즉, 콜백은 무언가 일어난 다음 실행 되는 함수이기에 순차적으로 실행되지 않는다.
+
+좀 더 살펴보면
+몽구스가 error와 videos를 콜백에 줬는데
+값을 보니 error은 null, 즉, 에러는 없었다
+그리고 videos는  [] 이다. 모델만 정의 했으니까 당연한 거다.
+
