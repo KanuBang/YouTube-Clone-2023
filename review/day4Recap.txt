@@ -49,4 +49,32 @@ ______________________________________________________________________
 
 10. POST 요청은 데이터를 우리의 벡엔드로 보낸다.
 
-11. 몽구슬를 통해서 js로 몽고디비로 소통한다.
+11. 몽구스를 통해서 js로 몽고디비로 소통한다.
+
+______________________________________________________________________
+
+1. form에 action이 존재 하지 않는다면 디폴트로 현재 그 폼이 위치한 url로 요청을 보낸다.
+2. from에 method가 존재 하지 않는다면 디폴트는 get 요청이다.
+3. 즉 form에 action도 method도 존재 하지 않느다면 디폴트는
+그 form이 위치한 url로 GET 요청을 보낸 것이다.
+
+4. input에서 name과 req.body의 연관성
+
+1)
+form(method="POST" action="/videos/upload")
+        input(name = "chanwu", placeholder="Title", required, type="text")
+        input(type="submit", value="Upload video")
+
+=> 첫 번째 input에 data를 넣고 submit 하면 input value는 chanwu에 저장된다고 보면된다.
+______________________________________________________________________
+
+2)
+export const postUpload = (req,res) => {
+  const title = req.body.chanwu
+
+  const newVideo = {
+    title,
+        ......
+
+=> form value의 js 표현식을 req.body로 접근한다.
+즉, res.body.chanwu가 input value이다.
