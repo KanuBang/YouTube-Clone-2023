@@ -228,3 +228,88 @@ res.send("fuck")으로 응답했는데 왜 또 응답하냐 이거다.
    res.send("fuck")
 
 에러가 뜨지 않는다. 왜냐? return으로 함수가 종료되었기 때문이다.
+
+______________________________________________________________________________________
+
+1. req.body로 form data를 받고  new Video({ })로 데이터를 생성한다.
+
+export const postUpload = (req,res) => {
+  const {title, description, hashtags} = req.body
+  const video = new Video({
+    title,
+    description,
+    createdAt: Date.now(),
+    hashtags: hashtags.split(",").map((word) => `#${word}`),
+    meta: {
+      views: 0,
+      rating: 0,
+    }
+  });
+  
+  return res.redirect("/")
+}
+
+1) upload.pug에서 form에 데이터를 입력하면 http://localhost:8081/videos/upload로 POST 요청이 간다.
+2) 그 다음 postUpload 컨트롤러가 실행된다.
+3) postUpload는 form의 input value를 req.body로 접근한다.
+4) new Video로 json-like-document data를 생성하고 req.body에서 얻은 데이터를 넣는다.
+
+2. Array.split은 spliiter or separator로 string을 분리하여 새로운 배열을 만든다.
+
+3. Array.map() 메소드는 콜백 함수를 이용해 각각의 요소에 호출해서 그 값을 변환하여 배열을만든다.
+
+4. 즉 split은 string을 separator로 쪼개서 새로운 배열을 만들고
+map은 배열의 요소에 차례 차례 접근해 값을 변환하여 변환된 배열을 만든다.
+
+5. mongoose가 자동으로 data에 id를 부여한다.
+
+
+______________________________________________________________________________________
+
+1. 몽구스는 우리가 입력한 데이터 정보를 바탕으로 데이터 유효성 검사를 실행해준다.
+
+2. 만약 String으로 지정한 것에 Number을 집어 넣으면 그 Numbre는 String으로 바뀐다.
+'몽구스'에 의해서
+
+3. 우리가 정한 데이터 타입과 다른 데이터가 입력되면
+에러를 띄우고 서버를 중단시킨다. '몽구스'에 의해서
+
+4. collection은 document의 집합이다.
+
+
+5. await Video.create과 new Video({})와 video.save()를 동시에 대체한다.
+
+  const {title, description, hashtags} = req.body
+  await Video.create({
+    title,
+    description,
+    //createdAt:"asdfsadf",
+    createdAt: Date.now(),
+    hashtags: hashtags.split(",").map((word) => `#${word}`),
+    meta: {
+      views: 0,
+      rating: 0,
+    }
+  })
+
+  이 코드가 다음 코드를 대체 했다.
+
+    const video = new Video({
+    title,
+    description,
+    createdAt: Date.now(),
+    hashtags: hashtags.split(",").map((word) => `#${word}`),
+    meta: {
+      views: 0,
+      rating: 0,
+    }
+
+    video.save()
+  });
+
+  즉, create는 데이터를 만듬과 동시에 db에 저장한다.
+
+
+6. video.create에 await async를 한 이유는 데이터를 만들고 db에 저장하는데 까지 기다리겠다는 의미다.
+
+7. help를 통해서 wetube같은 db를 탐험할 수 있다.
