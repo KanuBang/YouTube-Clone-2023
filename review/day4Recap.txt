@@ -78,3 +78,26 @@ export const postUpload = (req,res) => {
 
 => form value의 js 표현식을 req.body로 접근한다.
 즉, res.body.chanwu가 input value이다.
+
+
+______________________________________________________________________
+
+1. 몽고디비는 document-based이다.
+일반 DB는 행단위로 데이터를 삽입하고 
+sql 베이스라서 규칙성이 보장되는 대신 사용하기 어렵다
+
+하지만, 몽고디비는 document-based이기에 
+객체 형태로 데이터(json-like-document)를 저장한다.
+그래서 규칙성이 보장되지는 않지만 유연하고 이용하기 쉽다.
+
+물론, quert language도 쓸 수 있다.
+
+
+2. on vs once과 이벤트 리스닝
+이벤트 리스닝: 이벤트 이름과 이벤트 발생 시의 콜백을 연결한다.
+on(이벤트명, 콜백) 이벤트 이름과 이벤트 발생 시의 콜백을 연결한다.
+once(이벤트명, 콜백) 한 번만 실행되는 이벤트다.
+
+3. 몽구스는 nodejs와 mongodb를 연결한다.
+
+

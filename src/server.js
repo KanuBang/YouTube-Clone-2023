@@ -1,3 +1,4 @@
+import "./db" /*내서버와몽고가 연결*/
 import express from "express";
 import morgan from "morgan";
 import globalRouter from "./routers/globalRouter";
@@ -15,7 +16,7 @@ app.use("/videos", videoRouter);
 app.use("/users", userRouter);
 
 const handleListening = () => {
-    console.log(`${PORT} is listening`)
+    console.log(`✅ Server listenting on http://localhost:${PORT} 🚀`);
 }
 app.listen(PORT, handleListening)
 
