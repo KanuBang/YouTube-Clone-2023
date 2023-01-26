@@ -15,3 +15,38 @@ action이 없는 것은 현재 파일 경로를 따라간다
 
 
 6. ternary operator는 if else문을 간단히 만든다.
+
+______________________________________________________________________
+
+1. app.use(express.urlencoded({extended: true}))
+1) express application은 기본 상태에서 HTML의 form을 어떻게 다룰 지 모른다.
+2) app.use(express.urlencoded({extended: true}))
+을 통해서 express application에게 HTML의 form을 처리하고 싶다고 말한다.
+3) 이 미들웨어 덕분에 express application은 HTML의 form을 어떻게 다룰 지 알고 이해하게 된다.
+4) express application이 HTML의 form을 이해하고 어떻게 다룰 지 알게 됨으로써
+그 form data를 js로 변형시킨다.
+5) js로 form data가 변형됬기에 js에서도 개발자가 form data를 사용할 수 있다.
+
+즉, form data를 express application에게 이해시켜주고 그 from을 js로 변형시켜
+우리가 js에서 form data를 사용할 수 있게 만들어준다.
+
+2. form을 받을 때는 req.body로 받는다
+
+3. from에 있는 value의 js 표현식을 req.body를 통해서 접근한 것이다.
+
+4. input에 name이 없으면 req.body는 텅 빈 상태이다. input에 꼭 name을 넣자
+
+5. 하나의 url에 get, post 등 다른 요청을 동시에 쓸때는 route를 이용한다.
+
+6. route는 그저 url 경로를 담고 있을 뿐이다.
+
+7. redirect는 우리가 지정한 경로로 브라우저를 이동시킨다.
+
+8. req.params는 url에 있는 변수에 관한 거다. 
+그래서 const {id}=req.params가 가능한거다. (es6)
+
+9. 배열 db이기에 재시작하면 모두 초기화 된다.
+
+10. POST 요청은 데이터를 우리의 벡엔드로 보낸다.
+
+11. 몽구슬를 통해서 js로 몽고디비로 소통한다.
