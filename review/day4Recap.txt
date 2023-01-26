@@ -100,4 +100,34 @@ once(이벤트명, 콜백) 한 번만 실행되는 이벤트다.
 
 3. 몽구스는 nodejs와 mongodb를 연결한다.
 
+______________________________________________________________________
 
+1. 우리가 JS에서 할 것은 몽구스에게 우리 애플리케이션의 데이터가 어떻게 생겼는지 알려줘야 한다.
+
+즉, db가 알아야 할 데이터가 어떻게 생겼는지 알려준다
+
+우리가 비디오가 어떻게 생겼는지 알려주면 db가 비디오 모델을 만들고 그 모델을 통해서 다양한 작업을 할 수 있다.
+
+
+2. new mongoose.Schema로 스키마를 정의함 => 데이터가 어떻게 생겼는지 정의함
+
+const videoSchema = new mongoose.Schema({
+    title: String,
+    description: String,
+    createdAt: Date,
+    hashtags: [{type: String}],
+    meta: {
+        views: Number,
+        rating: Number,
+    }
+})
+
+3. mongoose.model("name", schema) 로 스키마로 실제 모델을 만들고 이름까지 붙임.
+
+const Video = mongoose.model("Video", videoSchema)
+
+4. import "./db" 와 import "./models/video"는 파일 자체를 import 하는 것이다.
+
+즉, 지금 server.js에서는
+mongoose로 js와 mongodb를 연결하고 커넥션을 생성했다.
+그리고 비디오 모델까지 생성했다.

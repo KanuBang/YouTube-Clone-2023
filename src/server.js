@@ -1,4 +1,5 @@
 import "./db" /*내서버와몽고가 연결*/
+import "./models/video"
 import express from "express";
 import morgan from "morgan";
 import globalRouter from "./routers/globalRouter";
