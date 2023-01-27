@@ -127,5 +127,14 @@ this로 문서에 접근할 수 없다.
 2. video.find 처럼 모델에 메소드를 만들 수 있게 해주는 것이 static이다.
 
 videoSchema.static("functionName", function( ) {
-    
+
 })
+
+______________________________________________________________________________________
+
+1. 데이터를 지울때는 model.findByIdAndDelete(id)를 쓰자.
+
+이거의 동의어는 findIneAndDelete({_id:id})
+
+2. findByIdAndRemove와 findByIdAndRemove의 차이점. 그냥 delete 쓰래
+이유도 설명 안 해주심
