@@ -211,3 +211,21 @@ ________________________________________________________________________________
 new mongoose.Schema => mongoose.model
 
 2. unique: true 데이터타입 => 유일한 데이터다.
+
+______________________________________________________________________________________
+
+1. hash이용 => 비밀번호를 저장할때 미들웨어로 처리한다. 
+bcrypt.hash(string, 해시횟수)를 사용하는데 그 전에 npm i bcrypt가 필요하다
+
+userSchema.pre("save", async function () {
+   
+    this.password = await bcrypt.hash(this.password, 5)
+    
+})
+
+2. 중요한 에러 처리
+https://velog.io/@0hhanum/express-MongoError-E11000-duplicate-key-error-collection
+E11000 duplicate key error collection: 이런 에러가 떳다
+내가 스키마 만들때 오타를 uesrname이라고 입력해 이 사단이 났다.
+
+=> 몽고디비에 들어가서 문제가 되는 걸 삭제하면 된다.
