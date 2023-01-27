@@ -79,3 +79,53 @@ id로 내가 원하는 데이터를 찾을 수 있다.
 -> ID가 아니라 Id다.
 
 5. DB에 요청하고 응답 받는 것은 콜백이므로 async await처리하자
+
+______________________________________________________________________________________
+
+1. findOneAndUpdate vs findById
+findOneAndUpdate 는 어떤 조건이든 지정할 수 있다. 
+하지만, findById는 무조건 조건이 id다
+
+2. findByIdUpdate(id, {업데이트할 내용})
+
+3. exits를 쓰는 이유
+find나 finById는 비디오를 가져오지만
+exist는 filter에서 따라서 그 데이터가 존재하는지만 체크한다,
+
+4. _id는 몽구스에서 지정한 id다.
+
+5. 몽구스의 미들웨어는 document에 무슨 일이 생기기전 이나 후에 미들웨어에 적용할 수 있다.
+schema.pre로 미들웨어를 사용할 수 있다.
+
+6. 미들웨어는 스키마를 만들고 모델을 만들기 전 그 사이에 있어야 한다.
+
+7.
+videoSchema.pre("save", async function ( )
+{
+    this.hashtags = this.hashtags[0]
+      .split(",")
+      .map((word) => (word.startsWith("#") ? word:`#${word}`))
+}
+
+)
+=> save 이벤트가 발생하면 해쉬태그 처리를 하고 저장하겠다. 라는 의미다.
+이전까지는 컨트롤러에서 처리했던 것을 미들웨어로 처리했다.
+
+const Video = mongoose.model("Video", videoSchema)
+
+
+______________________________________________________________________________________
+
+0. 즉, 미들웨어는 어떤 이벤트가 발생하면 
+갑자기 끼어들어서 그 이벤트가 발생했을때 할일을처리하고 
+조용히 사라진다
+
+1. findOneAndUpdate을 쓰지 않는 이유
+save hook을 처리 할 수 없다
+this로 문서에 접근할 수 없다.
+
+2. video.find 처럼 모델에 메소드를 만들 수 있게 해주는 것이 static이다.
+
+videoSchema.static("functionName", function( ) {
+    
+})

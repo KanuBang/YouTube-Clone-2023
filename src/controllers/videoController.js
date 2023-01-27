@@ -56,9 +56,7 @@ export const postEdit = async (req, res ) => {
   await Video.findByIdAndUpdate(id, {
     title,
     description,
-    hashtags: hashtags
-      .split(",")
-      .map((word) => (word.startsWith('#') ? word: `#${word}`))
+    hashtags: Video.formatHashtags(hashtags),
   })
   return res.redirect(`/videos/${id}`);
 };
@@ -76,13 +74,7 @@ export const postUpload = async (req,res) => {
       description,
       //createdAt:"asdfsadf", // error발생  -> catch문으로 이동
       createdAt: Date.now(),
-      hashtags: hashtags
-                  .split(",")
-                  .map((word) => (word.startsWith("#") ? word : `#${word}`)),
-      meta: {
-        views: 0,
-        rating: 0,
-      }
+      hashtags: Video.formatHashtags(hashtags),
     })
     return res.redirect("/")
   } catch(error) {
