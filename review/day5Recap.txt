@@ -138,3 +138,14 @@ ________________________________________________________________________________
 
 2. findByIdAndRemove와 findByIdAndRemove의 차이점. 그냥 delete 쓰래
 이유도 설명 안 해주심
+
+______________________________________________________________________________________
+1. search는 GET 요청을 신청한다.
+2. 요청이 get일 때 url로 받은 내용은 req.query로 받는다.
+3. 요청이 poast일 때 input으로 받은 내용은 req.body
+4. 라우터에서 url에 변수 값으로 설정한 내영 req.params
+라우터로 지정한 :id -> req.params
+pug파일에서 input으로 받은 내용 -> req.body(form이 POST일 때)
+pug파일에서 input으로 받은 url내용 -> req.query (form이 GET일 때)
+
+5. .sort({정렬조건})

@@ -13,8 +13,7 @@ console.log("finished")
 
 export const home = async (req, res) => {
     console.log("start")
-    const videos = await Video.find({}); // 비디오 전체 데이터
-    console.log("finished")
+    const videos = await Video.find({}).sort({createdAt:"desc"}); // 비디오 전체 데이터
     return res.render("home", {pageTitle:"HOME", videos})
     res.send("it will be ingnored. That's because there is return")
 }
@@ -90,4 +89,13 @@ export const deleteVideo = async (req, res) => {
   const {id} = req.params
   await Video.findByIdAndDelete(id)
   return res.redirect('/')
+}
+
+export const search = async (req, res) => {
+  const {keyword} = req.query
+  if(keyword) {
+    // search
+  }
+
+  return res.render("404", {pageTitle: "Search"})
 }
