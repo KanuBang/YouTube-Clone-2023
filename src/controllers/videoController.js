@@ -40,17 +40,26 @@ export const getUpload = (req,res) => {
 };
 
 export const postUpload = async (req,res) => {
-  const {title, description, hashtags} = req.body
-  await Video.create({
-    title,
-    description,
-    //createdAt:"asdfsadf",
-    createdAt: Date.now(),
-    hashtags: hashtags.split(",").map((word) => `#${word}`),
-    meta: {
-      views: 0,
-      rating: 0,
-    }
-  })
-  return res.redirect("/")
+
+  try {
+    const {title, description, hashtags} = req.body
+    await Video.create({
+      title,
+      description,
+      createdAt:"asdfsadf", // error발생  -> catch문으로 이동
+      //createdAt: Date.now(),
+      hashtags: hashtags.split(",").map((word) => `#${word}`),
+      meta: {
+        views: 0,
+        rating: 0,
+      }
+    })
+    return res.redirect("/")
+  } catch(error) {
+    return res.render("upload", {
+      pageTitle: "Upload Video",
+      errorMessage: error._message, 
+    })
+  }
+
 }
