@@ -149,3 +149,59 @@ pug파일에서 input으로 받은 내용 -> req.body(form이 POST일 때)
 pug파일에서 input으로 받은 url내용 -> req.query (form이 GET일 때)
 
 5. .sort({정렬조건})
+
+
+______________________________________________________________________________________
+
+1.몽고DB regex ($regex)
+몽고DB에서 정규표현식을 사용하기 위해 사용하는 키워드
+쿼리의 패턴 일치 문자열에 대한 정규식 기능을 제공합니다.
+
+2. RegExp 생성자는 패턴을 사용해 텍스트를 판별할 때 사용합니다.
+
+3.
+
+RegExp 사용 방법
+RegExp 객체는 리터럴 표기법과 생성자로써 생성할 수 있습니다.
+리터럴 표기법의 매개변수는 두 빗금으로 감싸야 하며 따옴표를 사용하지 않습니다.
+생성자 함수의 매개변수는 빗금으로 감싸지 않으나 따옴표를 사용합니다.
+```
+/ab+c/i 를 아래 RegExp 생성자를 이용해서 만들 수 있습니다.
+new RegExp(/ab+c/, 'i') // 리터럴 표기법
+new RegExp('ab+c', 'i') // 생성자 함수
+
+4
+
+videos title을 검색할때 keyword가 포함된것들을 regex operator를 통해 검색해 줄 수 있다.
+(regex = regular expression의 약자)
+const { keyword } = req.query;
+.
+.
+$regex: new RegExp(keyword, "i") -> keyword가 포함된 것들을 검색.
+$regex: new RegExp(`^${keyword}`, "i") -> keyword로 시작되는 것들을 검색.
+$regex: new RegExp(`${keyword}$`, "i") -> keyword로 끝나는 것들을 검색.
+(여기서 "i" = Welcome,welcome 둘다 같게 해주는것 즉 lowercase,uppercase의 구분을 없게 해주는것)
+( mongoose가 아닌 mongoDB가 해주는 기능이다)
+
+
+5. 즉 결론을 내리자면
+title: { $regex: } => 몽고DB에서 정규식을 쓰겠다
+
+  title: {
+          $regex: new RegExp(`${keyword}$`,"i")
+    } => 생성자을 이용해 정규 표현식을 쓰겠다
+      =>keyword로 끝나는 말 + uppercase 무시하겠다
+
+6. 다시 한번 결론을 내리자면
+
+ videos = await Video.find({
+        title: {
+          $regex: new RegExp(`${keyword}$`,"i")
+        }
+      })
+
+
+      몽고DB에서 정규 표현식을 이용할 거고
+      keyword에서 내가 설정한 정규 표현식이 title과 일치하는게 있다면
+      몽고 DB에서 가져와서 videos에 넣어라
+

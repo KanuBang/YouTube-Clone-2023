@@ -21,26 +21,19 @@ export const home = async (req, res) => {
 export const watch = async (req, res) => {
     const {id} = req.params;
     const video = await Video.findById(id);
-    console.log(video) //just test
     if(!video) {
       return res.render("404", {pageTitle: "NOT FOUND"})
     }
-    console.log("hereadsf")
-
     return res.render('watch', {pageTitle: video.title, video:video})   
 }
 
 export const getEdit = async (req, res) => {
-  console.log("here")
   const {id} = req.params;
   const video = await Video.findById(id);
-  console.log("5")
 
   if(!video) {
-    console.log("23452345")
     return res.render("404", {pageTitle: "NOT FOUND"})
   }
-  console.log("hereasdfsdfafd")
   return res.render('edit', {pageTitle: `Edit: ${video.title}`, video})
 }
 
@@ -93,9 +86,14 @@ export const deleteVideo = async (req, res) => {
 
 export const search = async (req, res) => {
   const {keyword} = req.query
+  let videos = [];
   if(keyword) {
-    // search
+      videos = await Video.find({
+        title: {
+          $regex: new RegExp(`${keyword}$`,"i")
+        }
+      })
   }
 
-  return res.render("404", {pageTitle: "Search"})
+  return res.render("search", {pageTitle: "Search", videos})
 }
