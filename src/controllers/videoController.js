@@ -13,7 +13,7 @@ console.log("finished")
 
 export const home = async (req, res) => {
     console.log("start")
-    const videos = await Video.find({});
+    const videos = await Video.find({}); // 비디오 전체 데이터
     console.log("finished")
     return res.render("home", {pageTitle:"HOME", videos})
     res.send("it will be ingnored. That's because there is return")
@@ -46,8 +46,8 @@ export const postUpload = async (req,res) => {
     await Video.create({
       title,
       description,
-      createdAt:"asdfsadf", // error발생  -> catch문으로 이동
-      //createdAt: Date.now(),
+      //createdAt:"asdfsadf", // error발생  -> catch문으로 이동
+      createdAt: Date.now(),
       hashtags: hashtags.split(",").map((word) => `#${word}`),
       meta: {
         views: 0,
