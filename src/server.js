@@ -4,6 +4,8 @@ import rootRouter from "./routers/rootRouter";
 import videoRouter from "./routers/videoRouter";
 import userRouter from "./routers/userRouter";
 import session from "express-session";
+import MongoStore from "connect-mongo";
+import { localsMiddleware } from "./middlewares";
 
 const app = express();
 app.set("view engine", "pug");
@@ -15,20 +17,12 @@ app.use(
         secret: "HEllO!",
         resave: true,
         saveUninitialized: true,
+        store: MongoStore.create({mongoUrl: "mongodb://127.0.0.1:27017/wetube"})
     })
 )
 
-app.use((req, res, next) => {
-    req.sessionStore.all((error, sessions) => {
-        console.log(sessions)
-        next()
-    })
-})
+app.use(localsMiddleware)
 
-app.get("/add-one", (req, res, next) => {
-    req.session.potato += 1
-    return res.send(`${req.session.id} ${req.session.potato}`)
-})
 app.use("/", rootRouter);
 app.use("/videos", videoRouter);
 app.use("/users", userRouter);
