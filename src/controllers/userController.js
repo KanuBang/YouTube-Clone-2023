@@ -8,7 +8,7 @@ export const postJoin = async (req, res) => {
     const pageTitle = "Join"
     
     if(password !== pwd2) {
-        return res.render("Join", {
+        return res.status(400).render("Join", {
             pageTitle,
             errorMsg: "Password confrimation failed",
         })
@@ -20,24 +20,46 @@ export const postJoin = async (req, res) => {
         username: form username
     */
     if(exists) {
-        return res.render("Join", {
+        return res.status(400).render("Join", {
             pageTitle,
             errorMsg: "The username/email is already taken",
         })
     }
+    try {
+        await User.create({
+            name: name,
+            //Db name: form name
+            username,
+            email,
+            password,
+            location
+        })
+        return res.redirect("/login")
 
-    await User.create({
-        name,
-        username,
-        email,
-        password,
-        location
-    })
-    return res.redirect("/login")
+    } catch(error) {
+        return res.status(400).render("join", {
+            pageTitle: "Upload Video",
+            errorMsg: error._message,
+        })
+    }
 }
+
+export const getLogin = (req, res) => res.render("login", {pageTitle: "Login"})
+
+export const postLogin = async (req, res) => {
+    const {username, password} = req.body
+    const exists = await User.exists({username})
+    if(!exists) {
+        return res.status(400).render("login", {
+            pageTitle: "Login",
+            errorMsg: "An account with this username does not exists",
+        })
+    }
+    res.end()
+} 
+
+export const logout = (req, res) => res.send("Logout");
 
 export const remove = (req,res) => res.send("Remove User");
 export const edit = (req, res) => res.send("Edit User");
-export const login = (req, res) => res.send("Login");
-export const logout = (req, res) => res.send("Logout");
 export const see = (req, res) => res.send("See User");
