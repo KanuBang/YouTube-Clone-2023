@@ -1,0 +1,23 @@
+abc
+gdrffg@gmail.com
+chan
+qwer1234
+seoul
+
+1.$or => 배열에서 or 연산을 실행한다.
+
+The $or operator performs a logical OR operation 
+on an array of one or more <expressions> and selects the documents 
+that satisfy at least one of the <expressions>. 
+The $or has the following syntax:
+{ $or: [ { <expression1> }, { <expression2> }, ... , { <expressionN> } ] }
+
+2. 작업 내용
+패스워드 확인, 이메일 or 유저네임 존재 여부를 체크 했다.
+만약 패스워드 확인이 일치하지 않거나 이메일 or 유저네임이 존재하는 에러와 같은 것은
+if로 처리했고 에러 발생시 에럼 메지와 함께 return으로 컨트롤러를 종료시켰다.
+
+즉,
+1. if문으로 먼저 에러 처리
+2. 에러 발생시 에러 설명과 함께 return 하여 함수를 종료
+3. if문에 안 걸린 코드는 문제 없는 코드

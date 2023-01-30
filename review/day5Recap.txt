@@ -223,7 +223,7 @@ userSchema.pre("save", async function () {
     
 })
 
-2. 중요한 에러 처리
+2. 중요한 에러 처리 => 같은 정보를 DB에 저장할때 일어나는 에러
 https://velog.io/@0hhanum/express-MongoError-E11000-duplicate-key-error-collection
 E11000 duplicate key error collection: 이런 에러가 떳다
 내가 스키마 만들때 오타를 uesrname이라고 입력해 이 사단이 났다.
