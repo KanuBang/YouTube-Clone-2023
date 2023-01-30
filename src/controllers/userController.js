@@ -51,7 +51,7 @@ export const postLogin = async (req, res) => {
   const {username, password} = req.body;
   const pageTitle = "Login";
   const user = await User.findOne({username:username})
-  
+
   if(!user) {
     return res.status(400).render("login", {
         pageTitle,
@@ -66,6 +66,7 @@ export const postLogin = async (req, res) => {
         errorMsg: "Wrong password"
     })
   }
+
   return res.redirect("/")
 } 
 
