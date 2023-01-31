@@ -1,3 +1,4 @@
 /node_modules
 /package-lock.json
 /review/대소문자에러주의.txt
+.env

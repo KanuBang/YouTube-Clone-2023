@@ -233,4 +233,113 @@ req.session.user = user;) =>
 userController에서 로그인 되었을 때 세션을 수정하는 코드다.
 이렇게 하여 로그인한 유저의 세션만 몽고 DB에 담는다.
 
+______________________________________________________________________________________
+
+Set-Cookie
+Set-Cookie 
+HTTP 응답 헤더는 
+서버에서 사용자 브라우저에 
+쿠키를 전송하기 위해 사용됩니다.
+https://developer.mozilla.org/ko/docs/Web/HTTP/Headers/Set-Cookie
+
+쿠키에 설정가능한 옵션
+Domain
+현재 쿠키가 어떤 서버로 전송되어져야 
+하는지를 지정할 수 있는 속성.
+쿠키카 어느 서버에서 왔고 어느 서버로 가는지 지정
+
+Expires: 만료되는 시간 설정
+HTTP 타임스템프로 기록된 쿠키의 최대 생존 시간(수명).
+session Cookie: 웹브라우저가 켜져있는 동안 유효하고 끄고 다시 켜면 없어짐
+
+Max-Age: 얼마동안 유지할 것 인지 설정
+쿠키가 만료될 때 까지의 시간 (밀리세컨드)
+
+secret
+이것은 세션 ID 쿠키에 서명하는 데 사용되는 비밀입니다.
+tamper = 손대다, (원문의 글귀 등을) 함부로 변경하다 ((with))
+
+Secret used to encrypt and sign session cookies. 
+session cookie is signed with this secret to prevent tampering
+
+you can think of the secret as a bit like a password(encrypt key) used to generate the signature
+In general, signing is used to confirm that the text originated from the right place. 
+Someone might be able to tamper with the text 
+but they wouldn't be able to sign it using the correct signature 
+because they don't know the secret. 
+
+In the context of cookies the 'origin' for the cookie is the server itself, 
+so it just provides a way to confirm that the cookie that comes back is the same one that was sent.
+
+=> 즉 세션 쿠키의 보안을 위해서 secret을 쓴다.
+보안 시간에서 배웠듯이 자신의 비밀키로 암호화하면 간접적으로 보내는 사람이 인증된다. 이것이 전자 서명이다.
+secret은 이 쿠키를 서버에서 보냈다는 것을 인증함과 동시에 다른 사람이 그 쿠키를 tampering 하지 못하도록 한다.
+
+store: 세션저장소를 지정
+
+COOKIE_SECRET에 넣을 랜덤 문자열 생성 사이트
+https://randomkeygen.com/
+
+______________________________________________________________________________________
+1. sessino의 옵션인 secret과 store url처럼 외부로 노출되지 말아야 하는 코드는 환경변수를 이용한다.
+
+1) .env 파일을 만든다.
+src 외부에 .env 파일은 환경변수 파일이다. 
+이 파일에서는 대문자로 작성하는게 규칙이다.
+비밀로 해야 할 것을 이 파일에다가 만든다.
+
+COOKIE_SECRET="??????????????????"
+DB_URL="mongodb:????????????"
+
+2) 외부로 노출되지 않도록 .gitignore에 .env 파일을 추가한다.
+.gitignore에 추가 -> git에 업로드하지않기 위함
+
+3) process.env.####으로 환경 변수를 이용한다.
+접근 방법 : process.env.###
+(process.env. -> 환경변수)
+
+4) npm i dotenv
+
+5) import "dotenv/config";를 프로그램의 가장 위에 import 한다.
+______________________________________________________________________________________
+
+1. git hub로 로그인하기
+
+0) OAuth란?
+OAuth는 인터넷 사용자들이 비밀번호를 제공하지 않고 
+다른 웹사이트 상의 자신들의 정보에 대해 웹사이트나 애플리케이션의 접근 권한을 부여할 수 있는 
+공통적인 수단으로서 사용되는, 접근 위임을 위한 개방형 표준이다
+
+1) Authorizing OAuth Apps?
+다른 사용자가 OAuth 앱을 승인하도록 할 수 있습니다.
+(GitHub의 OAuth 구현은 
+웹 브라우저에 대한 액세스 권한이 없는 앱에 대한 
+표준 인증 코드 부여 유형 및 OAuth 2.0 장치 인증 부여를 지원합니다.)
+
+2)깃허브 OAuth Apps Setting
+GitHub API를 사용하기 위해 등록한 애플리케이션입니다.
+https://github.com/settings/developers
+or
+https://github.com/settings/applications/new
+
+3) Creating an OAuth App (OAuth앱 만들기)
+https://docs.github.com/en/developers/apps/building-oauth-apps/creating-an-oauth-app
+
+4) Web application flow
+웹 애플리케이션 흐름: 브라우저에서 실행되는 표준 OAuth 앱에 대해 사용자에게 권한을 부여하는 데 사용됩니다.
+앱 사용자에게 권한을 부여하는 웹 애플리케이션 흐름은 다음과 같습니다.
+1. 로그인하려는 사이트에서 유저의 GitHub identity를 request하기 위해 유저를 GitHub 페이지로 리다이렉트시킵니다.
+2. 유저는 리다이렉트된 GitHub에서 승인을 하고, GitHub에 의해 다시 로그인하려는 사이트로 리다이렉트됩니다.
+3. 로그인 하려는 사이트는 유저의 액세스 토큰을 통해 API에 접근합니다.
+
+1. Users are redirected to request their GitHub identity
+2. Users are redirected back to your site by GitHub
+3. Your app accesses the API with the user's access token
+https://docs.github.com/en/developers/apps/building-oauth-apps/authorizing-oauth-apps
+
+5) Scopes for OAuth Apps (OAuth 앱의 범위)
+URL에 있는 것들을 바꿈으로써 다양한 방법으로 사용자를 승인할 수 있다.
+scope에는 사용자가 정보를 어디까지 공유해야 하는지 계정 생성을 할 수 있게 할지 말지 등을 정할 수 있다.
+https://docs.github.com/en/developers/apps/building-oauth-apps/scopes-for-oauth-apps
+
 
