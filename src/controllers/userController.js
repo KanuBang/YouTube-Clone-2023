@@ -84,23 +84,28 @@ export const startGithubLogin = (req, res) => {
     //https://github.com/login/oauth/authorize?client_id=bbb94458388405cea69b&allow_signup=false&scope=read%3Auser+user%3Aemail
     console.log("Users are redirected to request their GitHub identity")
     const baseUrl = "https://github.com/login/oauth/authorize"
-    //유저의 신원 확인과 유저 정보 접근 권한을 얻기 위해 github으로 redirect해야 된다.
-    // baseUrl이 그 주소다.
+    // 소셜 APP에서 유저가 신원을 확인하고 
+    // 유저가 OAuth APP이 되고픈 APP에 소셜 APP의 유저 정보 접근 권한을 부여하기 위해서는 
+    // USER가 소셜 APP(github)으로 redirect 되야 된다.
+    // baseUrl이 그 redirect 주소다.
+
+    
+    // 유저를 OAUTH APP으로 redirect 시킬 때 필요한 url 정보
     const config = {
         client_id : process.env.GH_CLIENT,
-        //Required. wetube 어플리케이션을 github OAuth 어플리케이션으로 등록했을때 받는 것
+        //Required. 어떤 APP이 소셜 App으로부터 OAUTH APP으로 등록됬을때 받는 것
         allow_signup : true,
-        // 인증되지 않았을때 유저가 github 계정을 등록할 옵션을 제공받게 할지 말지
+        // 유저가 소셜 APP에 인증되지 않았을때 
+        //그 유저가 소멸 APP에 계정을 등록할 옵션을 제공받게 할지 말지 결정한다.
         scope: "read:user user:email" 
-        //유저에게서 얼마나 많이 정보를 읽어내고 어떤 정보를 가져올 것인지
+        // OAUTH APP이 소셜 APP으로부터 USER에 대한 정보를 얼마 만큼 읽어내고 어떤 정보를 가져올 것인지
     }
-    // 유저를 gitgub으로 redirect 시킬 때 필요한 url 정보
+    
     const params = new URLSearchParams(config).toString()
     const finalUrl = `${baseUrl}?${params}`
     console.log(config)
     return res.redirect(finalUrl) 
-    // github으로 redirect 된 후 유저 신원을 확인하고 유저 정보 접근 권한에 대해 승인을 받는다.
-    // 그리고 나서 user는 callback 으로 redirect된다.
+    // user는 callback 으로 redirect된다.
 }
 // callback 라우터로 인해 finishGithubLogin 컨트롤러가 이용됨
 export const  finishGithubLogin = async (req,res) => {
