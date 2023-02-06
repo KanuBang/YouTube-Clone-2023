@@ -84,16 +84,20 @@ export const startGithubLogin = (req, res) => {
     //https://github.com/login/oauth/authorize?client_id=bbb94458388405cea69b&allow_signup=false&scope=read%3Auser+user%3Aemail
     console.log("Users are redirected to request their GitHub identity")
     const baseUrl = "https://github.com/login/oauth/authorize"
-    // 소셜 APP에서 유저가 신원을 확인하고 
-    // 유저가 OAuth APP이 되고픈 APP에 소셜 APP의 유저 정보 접근 권한을 부여하기 위해서는 
-    // USER가 소셜 APP(github)으로 redirect 되야 된다.
+    // USER가 소셜 APP에서 신원을 확인한다. 
+    // USER가 어떠 한 APP에 소셜 APP의 유저 정보 접근 권한을 부여하면
+    // 그 APP은 OAuth App이 된다.
+
+    // 위의 과정을 위해서는
+    // USER가 소셜 APP(github)으로 redirect 되어서 위의 과정을 시행해야 한다.
     // baseUrl이 그 redirect 주소다.
 
     
     // 유저를 OAUTH APP으로 redirect 시킬 때 필요한 url 정보
     const config = {
         client_id : process.env.GH_CLIENT,
-        //Required. 어떤 APP이 소셜 App으로부터 OAUTH APP으로 등록됬을때 받는 것
+        //Required.  // OAuth App의 식별자로
+        //어떤 APP이 소셜 App으로부터 OAUTH APP으로 등록됬을때 받는 것
         allow_signup : true,
         // 유저가 소셜 APP에 인증되지 않았을때 
         //그 유저가 소멸 APP에 계정을 등록할 옵션을 제공받게 할지 말지 결정한다.
@@ -102,11 +106,14 @@ export const startGithubLogin = (req, res) => {
     }
     
     const params = new URLSearchParams(config).toString()
+    // 유저를 OAUTH APP으로 redirect 시킬 때 필요한 url 정보
     const finalUrl = `${baseUrl}?${params}`
+    // callbakc redirect
     console.log(config)
     return res.redirect(finalUrl) 
     // user는 callback 으로 redirect된다.
 }
+
 // callback 라우터로 인해 finishGithubLogin 컨트롤러가 이용됨
 export const  finishGithubLogin = async (req,res) => {
     console.log("Users are redirected back to your site by GitHub")
@@ -116,21 +123,23 @@ export const  finishGithubLogin = async (req,res) => {
     const baseUrl = "https://github.com/login/oauth/access_token"
     const config = {
         client_id: process.env.GH_CLIENT,
-        //The client_id is a public identifier for apps
         client_secret: process.env.GH_SECRET,
-       /*
-        A client secret is a secret known only to your application and the authorization server . 
-        It protects your resources by only granting tokens to authorized requestors. 
-        Protect your client secrets and never include them in mobile or browser-based apps.
-       */
+        /* 
+        인증 서버와 OAuth App만이 가지고 있는 기밀이다.
+        이것을 인증된 요청자에게만 부여함으로써 client의 reosource를 보호한다.
+        */
         code: req.query.code
-        //Exchange code for an access token
+        //
+        // 소셜 로그인 서버가 
+        // 명시된 scope를 참고하여 code를 민든다. 
+        // 이 코드는 후에 accessToken으로 교환된다.
         /*http://localhost:8081/users/github/callback?code=13c5c82af44b7f5e0781*/
     }
 
     const params = new URLSearchParams(config).toString()
     const finalUrl = `${baseUrl}?${params}`
     //code를 accessToken으로 교환하는 요청을 보낼 URL
+
     const tokenRequest = await (
         await fetch(finalUrl, {
         //POST https://github.com/login/oauth/access_token
@@ -144,7 +153,7 @@ export const  finishGithubLogin = async (req,res) => {
     console.log("The access token allows you to make requests to the API on a behalf of a user.")
     console.log("Authorization: Bearer OAUTH-TOKEN \n GET https://api.github.com/user")
     
-      // scope -> code -> access_token
+    
       //즉, 우리가 정한 scope에 따라서 github가 code를 준다.
       //그리고 access_token은 code에 따라 만들어지므로
       //access_token에는 scope 내용이 담겨져 있다.
