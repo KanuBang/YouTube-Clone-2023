@@ -1,0 +1,139 @@
+Oauth인증 과정
+
+1. user를 github으로 redirect시켜 github에서 wetube가 원하는 나의 정보 scope를 wetube에게 줄지 말지 user에게 뭍는다.
+
+baseurl은 user가 github에서 신원 인증을 하고 github user 정보에 대한 접근 권한을 wetube에게 줄지 말지 결정하는 주소이다.
+=> const baseUrl = "https://github.com/login/oauth/authorize";
+
+config는 baseUrl에 추가하고 싶은 URL parameter이다. 객체로 저장한 후에 URL parameter로 바꾼다.
+client_id, 즉, wetube가 github의 OAUTH App이 되면서 부여받은 identifier은 필수이다.
+allow_signup은 만약 github으로 redirect된 user가 github 계정이 없다면 github 계정을 만들 수 있는 option을 부여할 지
+말지 결정하는 설정이다.
+scope는 wetube가 github의 user data 중 무엇을 원하고 얼마 만큼 원하는지 결정하는 요소이다.
+
+=> const config = {
+    client_id:
+    allow_signup:
+    scope:
+}
+
+config는 객체이기에 URL parameter로 바꾸는 과정이 필요하다.
+URLparamter이란 URL과 함꼐 data를 전달할때 사용된다.
+URLSearchParams은 객체를 URLparamter로 바꿔준다.
+=> const params = URLSearchParams(config).toString()
+
+이후에 
+최종 redirect 주소인 const finalUrl =  `${baseUrl}?${params}` 한후
+return res.redirect(finalUrl)로 startGithubLogin 컨트롤러를 끝내는 동시에
+user를 github로 redirect 시킨다.
+
+2. user가 github에서 자신의 신원인증을 하고 wetube가 원하는 scope의 github user data에 대해 접근을 허용하면
+github는 user를 callback으로 redirect 시키고
+url에다가 code(access_token)를 준다.
+
+3. wetube는 github에게 code를 access_token바꿔 달라고 github API를 통해 요청한다.
+
+const baseUrl = "https://github.com/login/oauth/access_token"
+ => wetube가 받은 code를 access_token으로 바꿔 달라고 요청을 보낼 주소다
+
+const config = {
+    client_id:
+    client_secret:
+    =>인증 서버와 Oauth앱만이 가지고 있는 기밀. 
+    =>client_secret 덕분에 client의 reosource가 보호된다.
+    
+    code: req.query.code
+    => access_token으로 바뀔 것
+}
+
+=> config는 wetube가 github으로 code를 access_token바꿔달라고 요청을 보낼때 추가되는 URL parameter이다.
+
+const params = URLSearchParams(config).toString();
+=> URLstring으로 바꿔준다.
+
+const finalUrl = `${baseUrl}?{finalUrl}`
+=> baseUrl과 config 내용이 담긴 URLstring으로 최종 finalUrl을 만들었다.
+
+4. wetube가 finalUrl로 code를 access_token으로 바꿔 달라고 요청한다.
+
+cosnt tokenRequest = await (
+    await fetch (finalUrl, {
+        method: "POST"
+        headers: {
+            Accept: "application/json"
+        }
+    })
+).json()
+
+=> wetube가 finalUrl로 code를 access_token바꿔달라고 POST 요청을 보낸다.
+access_token은 text로 return 되기에 .json()을 이용해 json으로 바꾼다.
+
+여기서 finalUrl은 API이다.
+API는 두 소프트웨어가 통신하는 메커니즘이다.
+API 덕분에 날씨 앱과 기상청 날씨 관측 시스켐이 통신하여 우리는 날씨 앱으로 기상청의 날씨 data를 확인할 수 있다.
+
+
+5. tokenRequest의 결과로 access_token을 받았는지 안 받았는지 판단한다.
+
+if("access_token" in tokenRequest) {}
+else { }
+
+6. access_token을 받았다면 scope 범위에 맞춰 githubAPI에 user data를 요청한다.
+
+const {access_token} = tokenRequest;
+const apiUrl = "https://api.github.com"
+
+const userData = await (
+    await fetch (`${apiUrl}/user`,{
+        headers: {
+            Authorization: `token ${access_token}`,
+        }
+    })
+). json()
+
+const emailData = await (
+    await fetch (`${apiUrl}/user/email`, {
+        headers: {
+            Authorization: `token ${access_token}`
+        }
+    })
+). json()
+
+
+7. primary === true, verified === true인 email 주소를 찾는다.
+
+const emailObj = emailData.find(
+    (email) => email.primary === true && email.verified === true
+) 
+
+=> find 함수는 콜백함수의 조건에 만족하는 첫번째 배열요소를 반환한다.
+
+8. githubAPI를 통해서 가져온 emailData에서 유효한 emailData가 없어 emailObj가 undefined이면 login으로 redirect한다.
+if(!emailObj) res.redirect("/login")
+
+9. emailObj가 유효하다면 그 emailObj.email이 wetube monogoDB에 있는 email인지 확인한다.
+const existingUser = await User.findOne({email:emailObj.email})
+
+10. emailObj.email이 wetube monogoDB에도 있는 email 이라면 로그인 시켜준다.
+if(existingUser) {
+    req.session.loggedIn = true
+    req.session.user = existingUser
+    return res.redirect("/")
+}
+
+11. emailObj.email이 wetube monogoDB에 없다면 그 socialLogin을 해준다.
+즉, monogoDB에 이 user는 password가 없고 emailData만 있다.
+
+else {
+    const user = await User.create({
+        name: userData.name,
+        username: userData.login,
+        email: emailObj.email,
+        password: "",
+        socialOnly: true,
+        location: userData.location,
+    })
+    req.session.loggedIn = true;
+    req.session.user = user;
+    return res.redirect("/");
+}

@@ -52,7 +52,7 @@ export const getLogin = (req, res) => res.render("login", {pageTitle: "Login"})
 export const postLogin = async (req, res) => {
   const {username, password} = req.body;
   const pageTitle = "Login";
-  const user = await User.findOne({username:username})
+  const user = await User.findOne({username:username, socialOnly: false})
 
   if(!user) {
     return res.status(400).render("login", {
@@ -111,7 +111,7 @@ export const startGithubLogin = (req, res) => {
     // callbakc redirect
     console.log(config)
     return res.redirect(finalUrl) 
-    // user는 callback 으로 redirect된다.
+    // USER는 
 }
 
 // callback 라우터로 인해 finishGithubLogin 컨트롤러가 이용됨
@@ -149,6 +149,7 @@ export const  finishGithubLogin = async (req,res) => {
           },
         })
     ).json()
+    
     console.log("3. Use the access token to access the API")
     console.log("The access token allows you to make requests to the API on a behalf of a user.")
     console.log("Authorization: Bearer OAUTH-TOKEN \n GET https://api.github.com/user")
