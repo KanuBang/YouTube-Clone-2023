@@ -53,6 +53,7 @@ export const postLogin = async (req, res) => {
   const {username, password} = req.body;
   const pageTitle = "Login";
   const user = await User.findOne({username:username, socialOnly: false})
+  // 소셜 로그인이 아님을 socialOnly로 표현
 
   if(!user) {
     return res.status(400).render("login", {
@@ -73,12 +74,6 @@ export const postLogin = async (req, res) => {
 
   return res.redirect("/")
 } 
-
-export const logout = (req, res) => {
-  req.session.loggedIn = false;
-  console.log(req.session.loggedIn)
-  return res.redirect("/")
-}
 
 export const startGithubLogin = (req, res) => {
     //https://github.com/login/oauth/authorize?client_id=bbb94458388405cea69b&allow_signup=false&scope=read%3Auser+user%3Aemail
@@ -192,12 +187,18 @@ export const  finishGithubLogin = async (req,res) => {
         if (!emailObj) {
             return res.redirect("/"); // 유효한 이메일 객체를 못 찾았다면 홈으로 리다이렉트
         }
-        const existingUser = await User.findOne({email: emailObj.email}) // database 해당 이메일을 가진 유저를 찾는다
+        let user = await User.findOne({email: emailObj.email}) // database 해당 이메일을 가진 유저를 찾는다
     
-        if(existingUser) {
-            req.session.loggedIn = true;
-            req.session.user = existingUser
-            return res.redirect("/")
+        if(!user) {
+            const user = await User.create({
+                avatarUrl: userData.avatar_url,
+                name: userData.name,
+                username: userData.login,
+                email: emailObj.email,
+                password: "",
+                socialOnly: true,
+                location: userData.location,
+            })
         }
         else {
             // database에 해당 유효한 이메일이 없다면 그 github email로 계정을 생성한다.
@@ -206,14 +207,7 @@ export const  finishGithubLogin = async (req,res) => {
               password: "",
               socialOnly: true,
             */
-            const user = await User.create({
-                name: userData.name,
-                username: userData.login,
-                email: emailObj.email,
-                password: "",
-                socialOnly: true,
-                location: userData.location,
-            })
+         
             req.session.loggedIn = true;
             req.session.user = user;
             return res.redirect("/");
@@ -229,7 +223,10 @@ export const  finishGithubLogin = async (req,res) => {
 
 }
 
-
+export const logout = (req, res) => {
+    req.session.destroy();
+    return res.redirect("/")
+  }
 
 export const remove = (req,res) => res.send("Remove User");
 export const edit = (req, res) => res.send("Edit User");
