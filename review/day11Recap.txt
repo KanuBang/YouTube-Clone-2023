@@ -1,0 +1,10 @@
+1. local 객체를 이용하여 pug에서도 session data를 쓸 수 있다.
+
+2. .all()과 미들웨어로 로그인 하지 않은 상태에서 접근할 수 있는 페이지
+로그인 한 상태에서 접근할 수 있는 페이지를 정했다.
+
+3. mongodb update를 한다고 해서 자동으로 session이 업데이트 되는 것은 아니다.
+session 업데이트는 postLogin 컨트롤러에서만 했다.
+
+4. findByIdAndUpdate는 업데이트 되기 전 데이터를 리턴해준다.
+대신 옵션으로 {new: true}를 붙이면 업데이트 된 데이터를 리턴한다.
