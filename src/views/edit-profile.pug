@@ -1,0 +1,8 @@
+extend base
+
+block content 
+    forminput(placeholder="Name", name="name", type="text", required, value=loggedInUser.name)
+    input(placeholder="Email", name="email", type="email", required, value=loggedInUser.email)
+    input(placeholder="Username", name="username", type="text", required, value=loggedInUser.username)
+    input(placeholder="Location", name="location", type="text", required, value=loggedInUser.location)
+    input(type="submit", value="Update Profile")
