@@ -63,7 +63,24 @@ avatarUrl은 avatarUrl: file ? file.path : avatarUrl, 이런 식으로 update �
 이미지가 업데이트 된다.
 
 여기서 주의할 것은 mongoDB에 저장되는 것은 파일이 아니라 '파일 주소'이다.
+파일 원본은 보존되어야 한다.
+파일 원본으로부터 복사본이 만들어지는 것은 상관없디만
+파일 원본이 수정되면 파일이 변질되는 것이다.
+아주 고귀한 이미지 파일이 있다고 해보자 이걸 파일 원본으로 전달하여 파일이 변질되면 얼마나 슬프겠는가
 
+________________________________________________________________________
+
+http://localhost:8081/uploads/30fdf397bf4b3708d631d3bf161a7ee4
+브라우저는 url을 통해서 소통한다.
+지금 이 url에서 uploads 아직 접근하지 못하기에 브라우저는 이 url을 이해하지 못한다.
+그래서 전역 미들웨어로 app.use("/uploads", express.static("uploads"))가 필요하다.
+즉, express가 uploads파일을 공개하여 브라우저가 접근할 수 있게 만들어주는 것이다.
+
+
+/users/edit을 하면 
+app.use("/users", userRouter); in server.js
+userRouter.route('/edit'); in userRouter.js
+그리고 그 다음에 controller가 실행되는 거다.
 
 
 
