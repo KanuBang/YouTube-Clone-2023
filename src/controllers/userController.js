@@ -259,12 +259,38 @@ export const getChangePassword = (req, res) => {
     if(req.session.user.socialOnly === true) {
         return res.redirect("/")
     }
-    console.log("ASDfasdff")
     return res.render("users/change-password", {pageTitle: "Change Password"})
-
 }
 
-export const postChangePassword = (req, res) => {
-    return res.redirect("/")
+export const postChangePassword = async (req, res) => {
+    
+    const {
+        body: {oldPassword, newPassword, newPasswordConfirmation},
+        session: {
+            user : {_id}
+        }
+    } = req;
+
+    const user = await User.findById(_id)
+    const ok = await bcrypt.compare(oldPassword, user.password)
+
+    if(!ok) {
+        return res.status(400).render("users/change-password", {pageTitle: "Change password", errorMessage: "The current Password is incorrect"})
+    }
+
+    if(newPassword !== newPasswordConfirmation) {
+        return res.status(400).render("users/change-password", 
+        {pageTitle:"Change Password", errorMessage: "Password cofrimation failed.."})
+    }
+
+    user.password = newPasswordConfirmation
+    //DB에서 ID로 찾은 user 데이터의 password를 update 한 거고
+    await user.save() // 그 다음 그 것을 몽고 DB에 저장한다. 몽고 DB update
+
+    return res.redirect("logout")
+    /*
+    로그아웃에서 세션을 삭제하면 지금 세션은 어차피 삭제되기에 세션 업데이트를 해줄 필요가 없다.
+    다시 새로운 pwd 로그인할 때 postLogin 컨트콜러에서 update된 몽고 DB로 새로운 새션을 만든다.
+    */
 }
 export const see = (req, res) => res.send("See User");
