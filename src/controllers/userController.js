@@ -235,14 +235,17 @@ export const getEdit = (req,res) => {
 export const postEdit = async (req, res) => {
     const {
         session: {
-            user: {_id}
+            user: {_id, avatarUrl}
         },
-        body: {name, email, username, location}
+        body: {name, email, username, location},
+        file,
     } = req
-
+    console.log("file")
+    console.log(file)
    const updatedUser = await User.findByIdAndUpdate(
         _id, 
         {
+            avatarUrl: file ? file.path : avatarUrl,
             name,
             email,
             username,
@@ -268,7 +271,8 @@ export const postChangePassword = async (req, res) => {
         body: {oldPassword, newPassword, newPasswordConfirmation},
         session: {
             user : {_id}
-        }
+        },
+  
     } = req;
 
     const user = await User.findById(_id)

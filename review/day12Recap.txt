@@ -36,5 +36,36 @@ if문에 해당이 되는 상황이면 비밀번호를 바꿀 수 없기에
 왜냐하면, 어차피 지금 세션은 사라지고 나중에 로그인 할 때 
 postLogin 컨트롤러에서 비밀번호가 업데이트된 몽고 DB의 데이터로 세션이 생성되기 때문이다.
 
+________________________________________________________________________
+
+먼저 npm i multer을 하여 multer 미들웨어를 설치한다.
+multer란 파일 업로드를 위해 사용되는 Node.js 미들웨어이다.
+
+multer을 사용하여 파일을 업로드할 form은 enctpye="multipart/form-data"가 필요하다. (이 form은 multer가 쓰일 거니 다르게 암호화 될 것라는 뜻이다.)
+파일을 업로드할 input에는 name이 있어야 backend에서 그 파일을 받을 수 있다.
+또한 input에 accpet로 어떤 종류의 파일을 받을 건지 명시한다. ("image/*"란 이미지 파일을 받겠다는 말이다.)
+
+multer을 사용하기 위해서는 당연히 multer 미들웨어에 multer가 import 되어야 한다.
+multer 미들웨어에서는 dest를 설정하여 업로드 되는 파일이 서버의 어느 저장소에 저장되는지 알려줘야 한다.
+(이 multer 파일 저장소는 gitignore로 commit를 거부한다.)
+
+form에서 파일을 업로드 하여 submit하면 해당 userRouter의 POST가 작동한다.
+POST에서는 multer 미들웨어가 실행되고 postEdit 컨트롤러가 실행된다.
+먼저, multer 미들웨어가 지정된 서버의 dest에 파일을 저장하고
+그 다음에 postEdit 컨트롤러가 실행된다.
+
+postEdit 컨트롤러에서는 user DB를 업데이트 하는데 이때
+avatarUrl은 avatarUrl: file ? file.path : avatarUrl, 이런 식으로 update 된다.
+즉, User Schema 자체에 avatarUrl은 String으로 타입이 정해져 있기에 파일 주소를 받을 준비가 되어 있고
+만약 파일을 업로드하지않고 edit-Profile 했다면 file은 undefined 이기에 
+삼항연산자에 따라 avatarUrl=avatarURl 즉, avatarUrl이 유지된다.
+반면에, file이 업로드되어 file.path가 있다면 avatarURl=file.path가 되어서
+이미지가 업데이트 된다.
+
+여기서 주의할 것은 mongoDB에 저장되는 것은 파일이 아니라 '파일 주소'이다.
+
+
+
+
 
 
