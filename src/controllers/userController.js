@@ -177,7 +177,7 @@ export const  finishGithubLogin = async (req,res) => {
                 },
             })
         ).json()
-
+        
         const emailObj = emailData.find(
             (email) => email.primary === true && email.verified === true
         ) // 유효한 이메일 객체를 찾고
@@ -297,4 +297,18 @@ export const postChangePassword = async (req, res) => {
     다시 새로운 pwd 로그인할 때 postLogin 컨트콜러에서 update된 몽고 DB로 새로운 새션을 만든다.
     */
 }
-export const see = (req, res) => res.send("See User");
+export const see = async (req, res) => {
+    const {id} = req.params
+    const user = await User.findById(id)
+
+    if(!user) {
+        return res.status(404).render("404", {
+            pageTitle: "User not found"
+        })
+    }
+
+    return res.render("users/profile", {
+        pageTitle: user.name,
+        user:user
+    })
+}

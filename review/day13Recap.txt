@@ -19,4 +19,28 @@
 16) postUpload 컨트롤러에서 파일 경로를 저장
 17) 브라우저는 express.static("/uploads") 덕분에 upload파일에 자유롭게 접근 가능
 
+________________________________________________________________________
 
+1) a(href=`/users/${loggedInUser._id}`) My Profile를
+base.pug에 추가한다.
+
+2) 그러면 user 라우터 userRouter.get("/:id", see)가
+see 컨트롤러를 실행시킨다.
+
+3) see 컨트롤러에서는 
+const {id} = req.params로 url에 있는 유저의 id를 빼온다.
+
+4) 빼온 user id로 데이터베이스에서 그 user가 있는지 찾는다.
+const user = await User.findById(id)
+
+5) 만약 그 user가 없다면 404 pug로 user not found를 알리고
+
+6) 망갹 user가 있다면
+ return res.render("users/profile", {
+        pageTitle: user.name,
+        user:user
+    })
+
+로 프로필 페이지를 렌더링 한다.
+
+7) 이 프로필 페이지는 인스타 프로필처럼 public이다.
