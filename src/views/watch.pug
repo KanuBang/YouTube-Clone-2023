@@ -1,8 +1,9 @@
 extends base.pug
 
 block content
+    video(src="/" + video.fileUrl, controls)
     div 
-        p=video.description
+        p= video.description
         small=  video.createdAt
     a(href=`${video.id}/edit`) Edit Video &rarr;
     br

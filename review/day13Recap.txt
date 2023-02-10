@@ -1,0 +1,22 @@
+1) Upload Video로 이동 => videos/upload"
+2) video 라우터 catch후 /upload 라우터로 이동
+3) protectorMiddlewre 작동
+4) get 요청이므로 getUpload 컨트롤러 작동
+5) getUpload 컨트롤러는 upload.pug 렌더링
+
+6) upload.pug에서는 비디오 파일을 업로드 할 것이므로  multer 미들웨어를 써야함
+7) 그래서 enctpye ="multipart-form:으로 설정
+8) 비디오 업로드 후 제출을 함
+9) action 주소가 /videos/upload 이것 이므로 이 주소로 POST 요청
+
+10) video라우터 작동 후 /upload catch
+11) POST 처리로 이동
+12) POST 처리 첫 번째는 videoUpload multer 미들웨어임
+13) 이곳에서 유저가 업로드된 비디오를 서버에 주소로 저장
+14) 파일 용량도 한정함
+
+15) 그후 다시 POST로 돌아와서 postUpload 컨트롤러 작동
+16) postUpload 컨트롤러에서 파일 경로를 저장
+17) 브라우저는 express.static("/uploads") 덕분에 upload파일에 자유롭게 접근 가능
+
+

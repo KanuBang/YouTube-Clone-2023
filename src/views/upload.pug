@@ -3,7 +3,9 @@ extend base.pug
 block content 
     if errorMessage
         span=errorMessage
-    form(method="POST" action="/videos/upload")
+    form(method="POST" action="/videos/upload" enctype="multipart/form-data")
+        lable(for="video") Video File 
+        input(id="video", name="video", type="file", accept="video/*", required)
         input(name = "title", placeholder="Title", required, type="text", maxlength=80)
         input(name = "description", placeholder="Description", required, type="text",minlength=20)
         input(name = "hashtags", placeholder="Hashtags, separated by comma.", required, type="text")

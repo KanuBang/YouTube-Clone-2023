@@ -58,12 +58,14 @@ export const getUpload = (req,res) => {
 };
 
 export const postUpload = async (req,res) => {
+  const {path: fileUrl} = req.file
 
   try {
     const {title, description, hashtags} = req.body
     await Video.create({
       title,
       description,
+      fileUrl,
       //createdAt:"asdfsadf", // error발생  -> catch문으로 이동
       createdAt: Date.now(),
       hashtags: Video.formatHashtags(hashtags),
