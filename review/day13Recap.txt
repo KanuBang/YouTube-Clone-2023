@@ -44,3 +44,30 @@ const user = await User.findById(id)
 로 프로필 페이지를 렌더링 한다.
 
 7) 이 프로필 페이지는 인스타 프로필처럼 public이다.
+
+________________________________________________________________________
+
+삽질 재데로 한 파트...
+
+1. Video 스키마 비디오 영상 소유자의 id를 넣었음.
+여기서 ObjectId는 mongoose가 제공하는 type임.
+JS가 제공하는 타입은 String,Number 같은 거고
+
+2. postUpload 컨트롤러에서 영상 업로드 할때
+세션 에서 유저 아이디 뽑아와서 영상을 DB에 저장할때 같이 owner에 저장시킴
+
+3. 그리고 watch 컨트롤러에서 watch.pug 랜더링할때
+video(볼 비디오), owner(video의 owner) 정보 같이 보내버림
+
+4. 그리고 watch.pug에서 로그인 된 유저와 영상 소유주가 같은 지 안 같은지를 판단해서
+edit video 같은 거 보일지 말지 결정함
+
+# 내가 한 삽질: 로그인 안 한 상태에서 watch.pug를 함
+로그인 안 한 상태에서는 loggedInUser가 없음.
+그래서 계속 에러가 떳음
+
+# 내가 한 삽질: video.js 파일을 Video.js로 바꾸고 import 경로도 다 Video로 수정했더닌
+model overwrite error가 뜸
+아직도 원인을 모르겠음.
+
+스키마 파일은 왠만해서 다시 건드리지 말자.
