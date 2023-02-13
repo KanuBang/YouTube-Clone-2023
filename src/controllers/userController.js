@@ -19,10 +19,7 @@ export const postJoin = async (req, res) => {
     }
     
     const exists = await User.exists({$or: [{username: username}, {email: email}]})
-    /*
-        username: db username
-        username: form username
-    */
+  
     if(exists) {
         return res.status(400).render("Join", {
             pageTitle,
@@ -78,7 +75,7 @@ export const postLogin = async (req, res) => {
 
 export const startGithubLogin = (req, res) => {
     //https://github.com/login/oauth/authorize?client_id=bbb94458388405cea69b&allow_signup=false&scope=read%3Auser+user%3Aemail
-    console.log("Users are redirected to request their GitHub identity")
+    //console.log("Users are redirected to request their GitHub identity")
     const baseUrl = "https://github.com/login/oauth/authorize"
     // USER가 소셜 APP에서 신원을 확인한다. 
     // USER가 어떠 한 APP에 소셜 APP의 유저 정보 접근 권한을 부여하면
@@ -105,16 +102,16 @@ export const startGithubLogin = (req, res) => {
     // 유저를 OAUTH APP으로 redirect 시킬 때 필요한 url 정보
     const finalUrl = `${baseUrl}?${params}`
     // callbakc redirect
-    console.log(config)
+    //console.log(config)
     return res.redirect(finalUrl) 
     // USER는 
 }
 
 // callback 라우터로 인해 finishGithubLogin 컨트롤러가 이용됨
 export const  finishGithubLogin = async (req,res) => {
-    console.log("Users are redirected back to your site by GitHub")
-    console.log("Exchange this code for an access token")
-    console.log("POST https://github.com/login/oauth/access_token")
+   // console.log("Users are redirected back to your site by GitHub")
+    //console.log("Exchange this code for an access token")
+    //console.log("POST https://github.com/login/oauth/access_token")
 
     const baseUrl = "https://github.com/login/oauth/access_token"
     const config = {
@@ -146,9 +143,9 @@ export const  finishGithubLogin = async (req,res) => {
         })
     ).json()
     
-    console.log("3. Use the access token to access the API")
-    console.log("The access token allows you to make requests to the API on a behalf of a user.")
-    console.log("Authorization: Bearer OAUTH-TOKEN \n GET https://api.github.com/user")
+    //console.log("3. Use the access token to access the API")
+    //console.log("The access token allows you to make requests to the API on a behalf of a user.")
+    //console.log("Authorization: Bearer OAUTH-TOKEN \n GET https://api.github.com/user")
     
     
       //즉, 우리가 정한 scope에 따라서 github가 code를 준다.
@@ -167,7 +164,7 @@ export const  finishGithubLogin = async (req,res) => {
                 }
             })
         ).json()
-        console.log(userData);
+        //console.log(userData);
       
         const emailData = await(
             //내가 scope로 정했기 때문에
@@ -183,7 +180,7 @@ export const  finishGithubLogin = async (req,res) => {
             (email) => email.primary === true && email.verified === true
         ) // 유효한 이메일 객체를 찾고
 
-        console.log(emailObj);
+        //console.log(emailObj);
         
         if (!emailObj) {
             return res.redirect("/"); // 유효한 이메일 객체를 못 찾았다면 홈으로 리다이렉트
@@ -241,8 +238,8 @@ export const postEdit = async (req, res) => {
         body: {name, email, username, location},
         file,
     } = req
-    console.log("file")
-    console.log(file)
+    //console.log("file")
+    //console.log(file)
    const updatedUser = await User.findByIdAndUpdate(
         _id, 
         {
@@ -300,8 +297,8 @@ export const postChangePassword = async (req, res) => {
 }
 export const see = async (req, res) => {
     const {id} = req.params
-    const user = await User.findById(id)
-
+    const user = await User.findById(id).populate("videos")
+    console.log(user)
     if(!user) {
         return res.status(404).render("404", {
             pageTitle: "User not found"
@@ -309,7 +306,7 @@ export const see = async (req, res) => {
     }
 
     const videos = await Video.find({owner:user._id})
-    console.log(videos)
+    //console.log(videos)
     return res.render("users/profile", {
         pageTitle: user.name,
         user:user,

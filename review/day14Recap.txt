@@ -31,3 +31,23 @@ Population는 특정 필드를 참조 콜렉션의 document로 치환한다.
 
 5) 같은 ObjectId가 있다면
 video 스키마의 owner 필드 값은 같은 ObjectId를 공유하는 user의 document로 치환된다.
+
+________________________________________________________________________
+
+1. populate를 하는 이유: collection 끼리 연결시키기 위함이다.
+  owner: {
+        type: mongoose.Schema.Types.ObjectId, required:true, ref:"User"
+    }, => video collection
+
+  videos: [{type:mongoose.Schema.Types.ObjectId, ref:"Video"}] => user collection
+
+video는 단 한개의 owner id를 가지고
+user는 여러 개의 video id를 가질 수 있다.
+
+2. 이렇게 함으로써 
+
+video 콜렉션 owner(영상 소유자)의 필드 값인 ObjectId가 현재 접속자 ObjectId와 일치한다면
+owner(영상 소유자)에는 현재 접속자의 document 값이 들어간다.
+
+또한 user 콜렉션 videos(현재 접속자가 올린 비디오)의 필드 값인 ObjectId가 video ObjectId와 일치한다면
+videos에는 현재 사용가 업로드한 video의 document 값이 들어간다.

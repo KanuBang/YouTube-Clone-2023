@@ -25,7 +25,7 @@ export const watch = async (req, res) => {
       return res.render("404", {pageTitle: "NOT FOUND"})
     }
 
-    console.log(video)
+    //console.log(video)
     return res.render('watch', {pageTitle: video.title, video})   
 }
 
@@ -64,18 +64,24 @@ export const postUpload = async (req,res) => {
   const {
     user: {_id},
   } = req.session
+  const {title, description, hashtags} = req.body
+
   try {
-    const {title, description, hashtags} = req.body
-    await Video.create({
-      title,
-      description,
-      fileUrl,
-      //createdAt:"asdfsadf", // error발생  -> catch문으로 이동
-      createdAt: Date.now(),
-      hashtags: Video.formatHashtags(hashtags),
-      owner: _id,
-    })
-    return res.redirect("/")
+     const newVideo = await Video.create({
+        title,
+        description,
+        fileUrl,
+        //createdAt:"asdfsadf", // error발생  -> catch문으로 이동
+        createdAt: Date.now(),
+        hashtags: Video.formatHashtags(hashtags),
+        owner: _id,
+      })
+
+      const user = await User.findById(_id)
+      user.videos.push(newVideo._id)
+      user.save()
+      
+      return res.redirect("/")
   } catch(error) {
     return res.status(400).render("upload", {
       pageTitle: "Upload Video",
