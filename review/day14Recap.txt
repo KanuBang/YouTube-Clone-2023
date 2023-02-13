@@ -1,0 +1,33 @@
+1. const videoSchema
+ owner: {
+        type: mongoose.Schema.Types.ObjectId, required:true, ref:"User"
+    },
+
+2. const video = await Video.findById(id).populate("owner")
+
+3. mongodb, RDBMS?
+
+mongodb = RDBMS
+콜렉션 = table
+document = row, tuple
+field = column
+
+4. populate
+
+Population는 특정 필드를 참조 콜렉션의 document로 치환한다.
+
+즉,
+1) video Schema를 정의할때 owner 필드는 User 콜렉션을 참조한다고 정의한다.
+ owner: {
+        type: mongoose.Schema.Types.ObjectId, required:true, ref:"User"
+    },
+
+2) watch 컨트롤러에서 url data를 req.params로 빼내 현재 접속자 id를 캐낸다.
+
+3) 그 현재 접속자 id가 올린 영상이 있는지 확인한다.
+
+4) 그리고 populate("owner")를 하면
+몽구스가 User에게 제공한 ObjectId와 video 필드인 owner의 값, 즉, ObjectId와 같은 것이 있는지 확인하다.
+
+5) 같은 ObjectId가 있다면
+video 스키마의 owner 필드 값은 같은 ObjectId를 공유하는 user의 document로 치환된다.

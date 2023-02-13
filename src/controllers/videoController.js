@@ -20,15 +20,13 @@ export const home = async (req, res) => {
 
 export const watch = async (req, res) => {
     const {id} = req.params;
-    const video = await Video.findById(id);
-    const owner = await User.findById(video.owner);
-
+    const video = await Video.findById(id).populate("owner")
     if(!video) {
       return res.render("404", {pageTitle: "NOT FOUND"})
     }
 
-    console.log(owner)
-    return res.render('watch', {pageTitle: video.title, video, owner})   
+    console.log(video)
+    return res.render('watch', {pageTitle: video.title, video})   
 }
 
 export const getEdit = async (req, res) => {

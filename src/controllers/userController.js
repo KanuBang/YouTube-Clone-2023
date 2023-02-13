@@ -1,4 +1,5 @@
 import User from "../models/User";
+import Video from "../models/video";
 import bcrypt from "bcrypt";
 import fetch from "node-fetch"
 import e from "express";
@@ -307,8 +308,11 @@ export const see = async (req, res) => {
         })
     }
 
+    const videos = await Video.find({owner:user._id})
+    console.log(videos)
     return res.render("users/profile", {
         pageTitle: user.name,
-        user:user
+        user:user,
+        videos:videos,
     })
 }
