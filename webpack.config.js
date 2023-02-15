@@ -1,3 +1,5 @@
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+//라이브러리로 로드되는 플러그인
 const path = require("path")
 
 module.exports = {
@@ -7,10 +9,14 @@ module.exports = {
 
     mode: "development",
     //웹팩의 실행모드
-
+    plugins: [
+      new MiniCssExtractPlugin({
+        filename:"css/styles.css"
+      })
+    ],
     output: {
-        filename: "kasas.js",
-        path: path.resolve(__dirname,"assets","js")
+        filename: "js/main.js",
+        path: path.resolve(__dirname,"assets")
     },
     //번들링한 파일들을 저장할 위치
     //번들링된 파일의 이름
@@ -27,6 +33,11 @@ module.exports = {
                 },
               },
             },
+
+            {
+              test: /\.scss$/,
+              use: [MiniCssExtractPlugin.loader, "css-loader", "sass-loader"],
+            }
           ],
     }
 }
