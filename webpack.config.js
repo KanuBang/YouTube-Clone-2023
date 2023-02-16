@@ -9,6 +9,7 @@ module.exports = {
 
     mode: "development",
     //웹팩의 실행모드
+    watch: true,
     plugins: [
       new MiniCssExtractPlugin({
         filename:"css/styles.css"
@@ -16,7 +17,8 @@ module.exports = {
     ],
     output: {
         filename: "js/main.js",
-        path: path.resolve(__dirname,"assets")
+        path: path.resolve(__dirname,"assets"),
+        clean: true,
     },
     //번들링한 파일들을 저장할 위치
     //번들링된 파일의 이름

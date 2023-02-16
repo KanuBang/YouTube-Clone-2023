@@ -4,8 +4,8 @@
   "description": "NodeJS/Express/Mongo/ES6",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon --exec babel-node src/init.js",
-    "assets": "webpack --config webpack.config.js"
+    "dev:server": "nodemon",
+    "dev:assets": "webpack"
   },
   "repository": {
     "type": "git",
