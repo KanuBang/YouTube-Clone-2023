@@ -13,9 +13,10 @@ console.log("finished")
 
 export const home = async (req, res) => {
     console.log("start")
-    const videos = await Video.find({}).sort({createdAt:"desc"}); // 비디오 전체 데이터
+    const videos = await Video.find({})
+    .sort({ createdAt: "desc" })
+    .populate("owner");
     return res.render("home", {pageTitle:"HOME", videos})
-    res.send("it will be ingnored. That's because there is return")
 }
 
 export const watch = async (req, res) => {
@@ -129,9 +130,9 @@ export const search = async (req, res) => {
   if(keyword) {
       videos = await Video.find({
         title: {
-          $regex: new RegExp(`${keyword}$`,"i")
-        }
-      })
+          $regex: new RegExp(`${keyword}$`,"i"),
+        },
+      }).populate("owner");
   }
 
   return res.render("search", {pageTitle: "Search", videos})
