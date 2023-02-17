@@ -125,10 +125,43 @@ substring() 메서드:
 으로 ISO 문자열에서 14 인덱스부터 19인덱스 까지 슬라이싱
 9) 분:초 문자열을 리턴하여 totalTime.innerText에 할당
 
-6 handleTimeUpdate는 비디오가 진행될때 마다
+6. handleTimeUpdate는 비디오가 진행될때 마다
 handleLoadedMetaData의 과정을 반복함.
 
 여기서 매개변수는 video.currentTime임.
 즉, 현재 비디오 재생시간이 매개변수로 전달되어
 분:초 형태로 만들어져
 currentTime에 할당됨.
+
+7. timeline 로직
+
+1) timeline input을 js로 가져옴
+const timeline = document.getElementById("timeline");
+
+2) timeline의 max 값을 영상 끝 시간으로 설정
+timeline.max = Math.floor(video.duration);
+여기서 만약에 영상의 길이가 3분이면
+min = 0 이고 max = 180이다.
+
+3) timeline에 input 이벤트 연결 후 콜백 함수 handleTimelineChange 설정한다.
+
+4) handleTimeUpdate의 기존 작업 
+
+먼저 기존의 handleTimeUpdate에서는
+비디오의 현재 시간을 받아서 소수점을 버리고 포매팅한 것을 현재 재생 시간에 넣었다.
+이에 따라 유저는 현재 영상 재생 시각을 알 수 있다.
+
+4) handleTimeUpdate: video로 timeline 조작
+-timeline.value = Math.floor(video.currentTime);
+timeline bar(input range)에 소수점을 버린 현재 비디오 시각을 넣었다.
+그러므로 영상이 재생될 때마다 timeline bar의 value도 변한다.
+
+5) handleTimelineChange: timeline으로 video 조작
+
+-const {target: {value},} = event;
+먼저 timeline bar의 value를 얻었다.
+
+-video.currentTime = value;
+그리고 나서 그 value를 현재 비디오 시간에 넣었다.
+
+이렇게 하여 timeline bar로 video의 재생 위치르 조작할 수 있다.
