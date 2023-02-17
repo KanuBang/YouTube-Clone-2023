@@ -1,6 +1,7 @@
 /*!**********************************************************************************************************************!*\
   !*** css ./node_modules/css-loader/dist/cjs.js!./node_modules/sass-loader/dist/cjs.js!./src/client/scss/styles.scss ***!
   \**********************************************************************************************************************/
+@charset "UTF-8";
 html,
 body,
 div,
@@ -139,7 +140,7 @@ header {
   align-items: center;
 }
 header .header__logo {
-  color: #cc0d00;
+  color: #ff1300;
   font-size: 38px;
 }
 header ul {
@@ -161,6 +162,11 @@ header .header__btn {
   color: #0e1117;
   padding: 5px 10px;
   border-radius: 5px;
+}
+header .header__avatar {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
 }
 
 footer {
@@ -187,6 +193,11 @@ footer {
 .video-mixin .video-mixin__data .video-mixin__meta {
   margin-top: 5px;
   font-size: 12px;
+}
+
+.videoSize {
+  width: 100%; /* 화면 너비에 맞게 조정 */
+  height: auto; /* 비율에 맞게 높이 자동 조정 */
 }
 
 .empty__message {
@@ -225,7 +236,7 @@ form:not(.search__form) {
   border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-input {
+input:not(input[type=range]) {
   all: unset;
   padding: 15px 20px;
   border-radius: 5px;
@@ -236,7 +247,7 @@ input {
   color: white;
   width: 90%;
 }
-input::placeholder {
+input:not(input[type=range])::placeholder {
   color: rgba(255, 255, 255, 0.7);
 }
 
@@ -245,7 +256,7 @@ input[type=submit],
   border-radius: 5px;
   padding: 12px 20px;
   background-color: white;
-  color: #cc0d00;
+  color: #ff1300;
   text-align: center;
   cursor: pointer;
   display: block;

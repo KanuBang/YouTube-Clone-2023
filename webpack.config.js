@@ -3,7 +3,10 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 const path = require("path")
 
 module.exports = {
-    entry: "./src/client/js/main.js",
+    entry: {
+      main:  "./src/client/js/main.js",
+      videoPlayer: "./src/client/js/videoPlayer.js"
+    },
     //웹팩은 하나의 시작점으로부터 의존적인 모듈들을 전부 찾아내서 하나의 결과물을 만들어낸다
     //그 시작점, 진입경로가 entry다.
 
@@ -16,7 +19,7 @@ module.exports = {
       })
     ],
     output: {
-        filename: "js/main.js",
+        filename: "js/[name].js",
         path: path.resolve(__dirname,"assets"),
         clean: true,
     },

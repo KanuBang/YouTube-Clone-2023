@@ -1,0 +1,134 @@
+1. play 버튼 로직
+
+1) HTML 요소인 playBtn을 js로 가져온다.
+const playBtn = document.getElementById("play")
+
+2) playBtn과 click 이벤트 리스너와 연결하고 콜백함수를 설정한다.
+playBtn.addEventListener("click", handlePlayClick);
+
+3) playBtn이 클릭될 시 handlePlayClick 콜백이 실행
+
+-video.paused: 비디오가 일시 중지되었는지 여부를 알려주는 부울 값이다.
+true면 일시 중지 상태이고 false면 그 재생 중이다.
+-video.play(): 일시 중지된 비디오를 재생시키는 메소드다.
+-video.pause(): 비디오를 일시 중지하는데 사용된다.
+
+만약 비디오가 실행중인 상태이면
+video.paused = false -> else -> video.pause() -> 일시 중지
+->video.paused = true -> btn text = play
+
+만약 비디오가 멈춘 상태라면
+video.paused = true -> if -> video.play() -> 재생
+->video.paused = true -> btn text = pause
+
+
+2. mute 버튼 로직
+
+1) HTML 요소인 muteBtn과 volumeRange를 js로 가져온다.
+const muteBtn = document.getElementById("mute")
+
+const volumeRange = document.getElementById("volume")
+=> 볼륨 조절 바
+
+2) muteBtn과 click 이벤트 리스너와 연결하고 콜백함수를 설정한다.
+muteBtn.addEventListener("click", handleMuteClick);
+
+3) 볼륨 값을 중간으로 초기 설정
+let volumeValue = 0.5;
+video.volume = volumeValue;
+
+video.volume은 비디오의 볼륨을 나타냄. 
+값의 범위는 0.0(음소거)에서 1.0(최대볼륨)까지이다.
+0.5값은 볼륨의 중간 수준을 의미함.
+
+4) muteBtn이 클릭 될시에 handleMuteClick이 실행
+video.muted는 비디오의 음소거를 나타내는 속성이다
+true이면 음소거 상태이고, false이면 비디오는 음소거되지 않았다.
+
+음소거 상태(볼륨이 0)이면
+video.muted = true -> if -> video.muted = false -> 음소거 해제
+-> muteBtn text = Mute ->볼륨 값을 초기 설정 볼륨 값으로 설정
+
+음소거 상태가 아니라면 (볼륨이 0이 아니라면)
+video.muted = false -> else -> video.muted=true -> 음소거
+-> muteBtn text = unmmite -> 볼륨 값을 0으로 설정
+
+3. 볼륨 바와 비디오 볼륨 연결 로직
+
+1) 1) HTML 요소인 volumeRange를 js로 가져온다.
+const volumeRange = document.getElementById("volume")
+
+2) 볼륨바를 input 이벤트와 연결하고 콜백은 handleVolumeChange로 설정한다.
+input 이벤트: input 이벤트는 입력 요소의 값을 변경할 때마다 발생한다.
+
+3) 볼륨 바와 볼륨 연결 로직
+이벤트 인수로 volume.value를 가져옴.
+
+음소거 상태라면 video.muted=true -> if -> video.muted=false 
+-> 음소거 해제 -> 버튼 innerText = Mute
+음소거 상태가 아니면 if를 건너 뛴다.
+
+볼륨 초기화 변수에 볼륨 값을 넣고
+비디오의 볼륨에 볼륨 값을 넣는다.
+
+즉, 볼륨 바로 볼륨을 왔다 갈때 할때 마다 input 이벤트가 발생하고
+다음 과정이 수행된다.
+
+4. 비디오 재생 시간 관려 로직 "기본 용어"
+
+1) HTML 요소인 비디오에 loadedmetadata, timeupdate 이벤트 연결
+
+loadedmetadata: 비디오나 오디오 요소가 로드되어 메타데이터가 준비될 때 발생하는 이벤트다.
+이벤트는 비디오나 오디오가 재생되기 전에 실행된다.
+
+timeupdate: 비디오나 오디오 요소의 재생 위치가 변경될 때마다 발생하는 이벤트입니다
+주로 비디오나 오디오의 현재 재생 위치를 계산하거나, 시간 진행바를 업데이트하거나, 재생 시간을 표시하는 등의 작업에 사용된다.
+
+video.duration: 
+비디오의 전체 길이(초).
+값은 비디오가 로드된 후에 사용할 수 있다.
+5분짜리 비도의 duration 속성값은 300이다.
+
+video.currentTime:
+현재 재생 중인 비디오의 위치.
+video.currentTime 속성 값을 변경하면 비디오의 재생 위치를 변경할 수 있다.
+video.currentTime 속성 값은 timeupdate 이벤트를 사용하여 
+비디오의 현재 위치를 추적하는 데 사용된다.
+
+5. handleLoadedMetaData와 formatTime 로직
+toISOString() 메서드: 
+Date 객체의 날짜와 시간 정보를 ISO 형식의 문자열로 반환한다.
+("YYYY-MM-DDTHH:mm:ss.sssZ"와 같은 형식으로 표현됨.)
+이렇게 생성된 문자열은 다른 시스템이나 서버와 날짜와 시간 정보를 주고 받을 때 사용될 수 있습니다.
+
+substring() 메서드:
+문자열의 일부를 추출할 때 사용하는 메서드다. (슬라이싱) 
+첫 번째 매개변수로 시작 인덱스, 
+두 번째 매개변수로 끝 인덱스를 지정합니다. 
+끝 인덱스는 선택적이며, 지정하지 않으면 
+문자열의 끝까지 추출합니다.
+
+1) 먼저 비디오가 로드되어 메타데이터가 준비되면 loadedmetadata 이벤트가 캐치됨
+2) handleLoadedMetaData 실행
+3) video.duration로 비디오 전체 길이를 초로 가져옴
+4) Math.floor(video.duration)
+전체 시간이 3분 10초면 video.duration이 190.423432 이런 값임.
+이걸 190으로 안정적으로 받기위해 Math.floor을 씀
+(Math.floor은 소수점 이하 값을 버린다.)
+5) formatTime(Math.floor(video.duration))
+전체 시간(초를) formatTime에게 넘김
+6) 날짜와 시간 정보를 다루는 Date 객체를 만들고 seconds* 1000을 전달
+1000을 전달하는 이유는 Date 객체가 밀리초 단위로 시간을 다루기 때문이다.
+7) toISOString()
+밀리초 단위인 시간을 ISO 형식의 문자열로 변환함.
+8) substring(14, 19)
+으로 ISO 문자열에서 14 인덱스부터 19인덱스 까지 슬라이싱
+9) 분:초 문자열을 리턴하여 totalTime.innerText에 할당
+
+6 handleTimeUpdate는 비디오가 진행될때 마다
+handleLoadedMetaData의 과정을 반복함.
+
+여기서 매개변수는 video.currentTime임.
+즉, 현재 비디오 재생시간이 매개변수로 전달되어
+분:초 형태로 만들어져
+currentTime에 할당됨.
