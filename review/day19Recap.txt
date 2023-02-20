@@ -30,3 +30,83 @@ fullscreen상태 => btn 클릭 => 원래 화면으로 되돌아감(document.exit
 3) videoContainer.requestFullscreen()로
 웹 페이지의 요소를 전체 화면 모드로 실행하도록 만든다.
 
+_______________________________________________________________
+
+1. Controls Events 기본 용어
+mousemove 이벤트: 마우스 포인터가 요소 내에서 움직일때 발생한다.
+mouseleave 이벤트: 마우스 포인터가 요소를 벗어날때 발생한다.
+setTimeout 함수:
+clearTimeout 함수:
+
+2. "마우스 포인터가 요소 내에서 움직일때" 논리
+1) 비디오 요소 안에서 마우스 포인터가 요소가 움직일때 
+콜백으로 등록된 handleMouseMove가 작동
+
+2) 첫 번째에는 controlsTimeout, controlsMovementTimeout이 null이기에
+모든 if문이 씹힘
+
+3) 그리고 videoControls id를 가진 요소에 showing css class가 추가됨
+
+4) 그리고 3초가 지나면 다시 hideControls()를 이용하여 
+videoControls에 showing css class를 제거함.
+
+3. "마우스 포인터가 비디오 요소를 떠났을때" 논리
+만약 마우스 포인터가 벗어난 상태에서 3초가 지나면
+비디오 바를 감춘다.
+
+4. 왜 이렇게 하는 가?
+마우스가 비디오 요소 안에서 움직이면 비디오 바를 보여주고 3초동안 마우스의 움직이 없으면 비디오 바를 감춘다.
+또한, 마우스가 비디오를 벗어나고 3초가 지나면 비디오 바를 감춘다.
+
+5. controlsMovementTimeout, controlsTimeout의 의미?
+
+controlsMovementTimeout은 비디오 안에서의 setTimeout의 id를 담고
+controlsTimeout은 비디오 밖에서의 setTimeout의 id를 담는다.
+
+6. 
+   
+const handleMouseMove = () => {
+    if(controlsTimeout) {
+        clearTimeout(controlsTimeout);
+        controlsTimeout = null;
+    }
+
+    if(controlsMovementTimeout) {
+        clearTimeout(controlsMovementTimeout)
+        controlsMovementTimeout = null
+    }
+
+    videoControls.classList.add("showing")
+    controlsMovementTimeout = setTimeout(hideControls, 3000)
+}
+
+const handleMouseLeave = () => {
+    controlsTimeout = setTimeout(hideControls, 3000)
+}
+
+마우스가 비디오 요소안에서 움직일때마다 handleMouseMove가 재실행된다.
+그리고 비디오 요소안에서 마우스가 3초 동안 움직이지 않으면 그대로 handleMouseMove의 코드가 진행되어
+비디오 바를 보여주고 3초후에 그 비디오 바가 사라진다.
+
+마우스가 비디오 밖에서 움직일때마다 handleMouseLeave가 재실행된다.
+그리고 비디오 요소 밖에서 마우스가 3초 동안 움직이지 않으면 setTimeout이 실행되어
+비디오 바가 사라진다.
+
+ex)
+마우스가 비디오를 떠난 상태에서 움직이지 않고 3초가 지남. 
+=> hideControls가 실행됨.
+=> 비디오 바가 제거됨
+=> 그 setTimeout의 id는 controlsTimeout에 저장.
+=> 그리고 마우스 포인터가 다시 비디오 내로 들어오면
+=> if(controlsTimeout)로 들어가
+=> setTimeout id를 삭제하고 controlsTimeout = 0으로 초기화
+
+clearTimeout 하는 이유?
+setTimeout을 재사용 하기 위함이다.
+그 이유는 setTimeout은 딱 1번만 임무를 수행하면 끝이기 때문이다.
+그래서 setTimeout의 id를 clearTimeout으로 삭제하고 
+다시 임무를 수행할 수 있도록 해줘야 한다.
+
+나무젓가락 같은 느낌이다. 한 번 쓰면 다시는 못 쓰기에 없애고 새로운 것을 써야 한다.
+
+
