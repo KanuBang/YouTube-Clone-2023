@@ -1,0 +1,32 @@
+1. fullScreen 작업 용어
+
+document.fullScreenElement
+: 현재 문서가 전체화면에서 실행 중일 경우 해당 요소를 반환하는 속성이다.
+현재 문서가 전체화면이 아니라면 null을 반환한다.
+
+document.exitFullscreen
+: 이 메소드를 호출하면 전체화면에서 빠져나와 원래 화면 크기와 배치로 돌아간다.
+
+requestFullscreen()
+: 웹 페이지의 요소를 전체 화면 모드로 실행하는 데 사용한다.
+
+2. fullScreen 공통 논리
+
+1) fullScreenBtn에 click이벤트를 연결하고 콜백으로 handleFullscreen을 연결한다
+2) handleFullscreen 에서 전체화면인 html 요소를 가져오기 위하여
+const fullscreen = document.fullscreenElement;을 이용한다.
+만약 전체화면인 요소가 없다면 fullScreen은 null이다.
+
+3. fullscreen에서 원래 화면으로 되돌리는 논리
+1) fullScreen이 null이 아니라면 if문으로 간다. (fullScreen인 것이 있다)
+2) if문 안에서는 fullScreenBtn을 눌러 fullScreen에서 원래 화면으로 되돌린다.
+즉,
+fullscreen상태 => btn 클릭 => 원래 화면으로 되돌아감(document.exitFullscreen();)
+=> btn text = "Enter Full Screen";
+
+4. 원래 화면에서 fullScreen으로 되돌리는 논리
+1) fullscreen인 요소가 없기에 fullScreen은 null이다.
+2) else로 간다.
+3) videoContainer.requestFullscreen()로
+웹 페이지의 요소를 전체 화면 모드로 실행하도록 만든다.
+
