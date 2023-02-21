@@ -1,0 +1,64 @@
+0. 용어
+.meat = 추가 정보를 포함하는 객체
+
+.meat.views = 비디오 일 경우 조회수 정보
+
+ended 이벤트 = 비디오가 종료됬을때 발생하는 이벤트
+
+data-id = HTML의 데이터 속성으로, 요소에 추가 정보를 제공하고 js or css에서 이 정보를 사용할 수 있다.
+데이터 속성은 HTML 요소에 추가적인 정보를 저장하는 데 사용되며, data- 접두어로 시작합니다.
+
+dataset = js에서 dataset은 HTML 요소의 데이터 속성 (data-* attributes)에 접근할 수 있는 속성입니다.
+
+fetch() 함수는 JavaScript에서 네트워크 요청을 만들기 위한 메서드 중 하나입니다. 
+이 함수를 사용하면 서버로 HTTP 요청을 보내고
+, 응답을 비동기적으로 처리할 수 있다.
+
+sendstatus와 status의 공통점과 차이점
+공통점: express 프레임워크에서 http 응답 코드를 설정하는데 사용된다.
+status: 응답 코드를 수동으로 설정할 때 사용
+sendstatus: 응답 코드와 해당 코드에 대한 설명을 포함하는 응답을 보낼때 사용
+ex) res.sendStatus(404); // 응답 코드 404와 함께 "Not Found" 텍스트를 자동으로 설정함
+
+1. view controller 로직
+
+1) wathch.pug에서 #videoContainer에 데이터 속성(data-id)으로 video._id를 넣음
+데이터 속성을 사용하는 이유는 요소에 추가 정보를 제공하여 css와 js에서 사용하기 위함이다.
+
+2) 비디오를 재생시키고 끝나면 ended 이벤트가 발생한다. (client의 videoPlayer.js)
+
+3) 그후 콜백함수인 handleEnded가 작업을 시작한다. (client의 videoPlayer.js)
+
+4) 영상이 끝난 비디오의 id를 가져옴. (client의 videoPlayer.js)
+const id = videoContainer.dataset.id;
+dataset은 html 요소의 데이터 속성에 접근할 수 있는 속성이다.
+
+5) fetch 함수로 `/api/videos/${id}/view`로 POST 요청을 보냄 (client의 videoPlayer.js)
+fetch로 자기가 원하는 서버 주소에 http 요청을 보낼 수 있다.
+
+6) app.use("/api", apiRouter) 라우터가 apiRouter로 이끌어줌
+
+7) apiRouter.post("/videos/:id([0-9a-f]{24})/view", registerView);
+해당 컨트롤러가 post요청을 잡고 registerView를 실행한다.
+
+8) registerView 컨트롤러가 작동하여 url에서 video id를 가져옴
+const {id} = req.params
+
+9) 그 비디오 id로 몽고DB에서 해당 비디오 객체를 찾음
+const video = await Video.findById(id)
+
+10) 만약에 없다면 상태 코드 404로 응답함
+sendStatus이기 때문에 해당 코드에 대한 설명도 포함
+if(!video) {
+    return res.sendStatus(404)
+}
+
+11) 정상적 작동을 한다면
+video.meta.views를 이용하여 조회수 +1을 함.
+
+video.meta.views = video.meat.video+1
+12) 조회수가 올라간 것을 mongodb에 저장하고
+await video.save()
+
+13) 정상적으로 조회수를 기록했음을 sendStatus(200)으로 알림
+return res.sendStatus(200)
