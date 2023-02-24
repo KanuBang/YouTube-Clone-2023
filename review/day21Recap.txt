@@ -1,0 +1,91 @@
+#복습
+
+navigator객체는 웹 브라우저가 제공하는 다양한 기능에 대한 정보를 제공한다.
+ex)navigator.userAgent: 현재 사용 중인 브라우저에 대한 정보를 제공한다.
+
+mediaDevices 속성:
+웹 브라우저에서 사용 가능한 미디어 입력 장치(카메라, 마이크 등)을 나타내는 객체에 엑세스할 수 있다.
+
+getUserMedia() 메소드:
+미디어 입력 장치에서 미디어 스트림을 캡처하는데 사용된다.
+
+video.srcObject 태그: 
+비디오 소스를 설정하는데 사용된다.
+이 속성을 사용하면 미디어 스트림을 비디오 요소에 연결할 수 있다.
+
+따라서,
+const stream = await navigator.mediaDevices.getUserMedia
+({
+    audio:false,
+    video:true,
+})
+
+video.srcObject = stream
+video.play()
+
+
+_______________________________________________________________________________________
+1. video recorder 로직
+
+1) init() 실행 => true로 지정한 '미디어 스트림'을 가져와 video.srcObject에 할당해 비디오를 '실시간'으로 실행시킨다.
+2) navigator.mediaDevices.getUserMedia({
+       audio: false,
+       video: true, 
+    })
+
+=> 웹캠(미디어) 스트림을 가져온다.
+즉, 웹 브라우저에서 사용 가능한 다양한 기능 중 
+미디어 장치를 선택했고 
+사용하고 싶은 미디어 장치를 true로 설정하여 
+웹캠 스트림을 가져온다.
+
+3) video에다가 video stream을 로딩한다.
+
+"video.srcObject와 video.src의 차이점은 뭘까?"
+
+video.srcObject는 MediaStream 객체를 설정하여 비디오 스트림을 로딩한다.
+즉, MediaStream 객체를 video 요소에 연결하여 비디오 스트림을 출력한다.
+
+반면에, video.src는 비디오 파일의 경로나 URL을 설정하여 비디오 파일을 로딩한다.
+video.src에 비디오 파일의 경로나 URL을 설정하면 
+비디오 파일이 다운로드되어 로컬에 저장된 후
+video 요소에 출력된다.
+
+즉, video.srcObject는 실시간으로 생성되는 비디오 스트림을 출력하는데 사용되고,
+video.src는 저장된 비디오 파일을 출력하는데 사용된다.
+
+4) startBtn에 클릭 시 handleStart 실행
+
+5) handleStart에서 btn의 text를 "stop Recording"으로 바꾼다.
+startBtn.innerText = "Stop Recording"
+
+6) 그리고 startBtn을 '녹화 종료'로 바꾼다.
+startBtn.removeEventListener("click", handleStart)
+startBtn.addEventListener("click", handleStop)
+
+7) recorder = new MediaRecorder(stream, {mimeType:"video/webm"})
+MediaRecorder 객체란?
+
+MediaRecorder 객체는 stream에서 캡쳐된 비디오나 오디오 데이터를 녹화하기 위해 사용된다.
+즉, 이 코드에서는 MediaRecorder 객체를 생성하고 stream(웹캠 스트림)을 전달받아 '웹캠 비디오'를 녹화한다.
+그리고 두 번째 인수인  {mimeType:"video/webm"}는 미디어 타입을 지정한다.
+
+8) recorder.start()로 레코더를 실행시킨다.
+
+9) ondataavailable 이벤트:
+recorder.start()으로 녹화가 시작된 후 데이터가 수집될때마다 발생하며,
+stop() 메소드가 호출될 때 최종적인 데이터가 수집되어 발생한다.
+
+10) 비디오가 녹화되는 과정
+recorder.start()로 녹화 시작 -> 녹화 중 -> '녹화 종료 클릭' 
+-> handleStop 실행 -> 버튼이 '다운로드'로 바뀜 
+-> recorder.stop() -> ondataavailable이벤트 발생 
+-> 녹화된 비디오 데이터가 URL 형식으로 바뀜 -> srcObject를 null로 초기화 
+-> video.src로 비디오 업로드 -> 비디오는 반복재생하여 실행
+
+11) 녹화된 비디오 다운로드
+다운로드 버튼 클릭 -> handleDownload 실행
+-> a 태그 생성
+-> a 태그에 다운로드 할 파일의 URL을 포함시킴
+-> document에 추가적인
+-> a.click()으로 a를 클릭하게 만들어 비디오를 다운로드 시킴
