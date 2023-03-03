@@ -1,0 +1,122 @@
+"Transcode Video"
+
+1. ffmpeg는 뭔가?
+ffmpeg는 비디오나 오디오 파일을 인코딩, 디코딩, 변환, 스트리밍 및 편집 등의 작업을 수행하게 해주는
+멀티미디어 프레임워크이다.
+
+2. @ffmpeg/core를 쓰는 이유는?
+ffmpeg 라이브러리를 JavaScript에서 쓰기 위해서.
+이 라이브러리 덕분에 JavaScript로 ffmpeg 라이브러리를 이용하여 비디오나 오디오 파일에 관한 작업을 쉽게 할 수 있다.
+
+3. @ffmpeg/ffmpeg를 쓰는 이유는?
+ffmpeg 라이브러리를 실행시키기 위해서는 ffmpeg 바이너리 파일이 필요하다.
+그 ffmpeg 바이너리 파일을 제공하는 라이브러리가 이것이다.
+
+4. const ffmpeg = createFFmpeg({
+      log:true
+   }); 의 목적은?
+
+    ffmpeg 라이버리를 사용하기위해 ffmpeg 인스턴스를 생성해야 한다.
+    createFFmpeg가 이 과정을 수행하고 log:true는 ffmpeg 라이브러리의 로그를 출력을 해준다.
+    로그를 남김으로써 ffmpeg 수행 과정을 파악해 오류 발생 시 빠르게 해결할 수 있다.
+
+5. await ffmpeg.load()를 쓰는 목적은?
+웹 어플리케이션에서 ffmpeg 라이브러리를 사용하기 위해서는 ffmpeg 바이너리 파일이 필요하다.
+await ffmpeg.load()는 ffmpeg 바이너리 파일을 로드하고 초기화하여 js로 ffmpeg를 다룰 수 있게 해준다.
+
+6. ffmpeg.FS("writeFile", "recording.webm", await fetchFile(videoFile)) 이 코드의 목적은?
+
+fetchFile(videoFile)은 매개변수로 전달된 URL에서 비디오 파일을 가져오는 것이다.
+다시 말하자면, 전달된 URL에서 BLOB 객체(비디오 파일)를 가져온다.
+그리고 ffmpeg 라이브러리의 파일 시스템(FS)를 이용하여 그 BLOB 객체를 recording.webm에다가 write한다.
+
+7. await ffmpeg.run("-i", "recording.webm", "-r", "60", "output.mp4") 코드의 목적은?
+"-i"는 입력 파일을 나타내는 옵션.
+"recording.webm"은 입력 파일.
+"-r 60" 초당 프레임 수 설정하는 옵션.
+"output.mp4" 출력 파일.
+
+즉, 이 코드는 "recording.webm"을 입력 파일로 설정하고
+이 파일을 초당 프레임수 60(60fps)로 변환시켜 output.mp4로 출력하겠다
+라는 코드이다.
+
+
+8. const mp4File = ffmpeg.FS("readFile", "output.mp4")를 쓰는 목적은?
+변환된 파일인 output.mp4를 읽는 코드이다.
+output.mp4를 읽어서 uint8array 형식을 리턴한다.
+
+9. const mp4Blob = new Blob([mp4File.buffer], {type:"video/mp4"})
+
+mp4File은 현재 uint8array이다.
+이 mp4File의 배열 버퍼를 Blob 객체에 넣어
+mp4File의 내용을 Blob 객체로 변환한다.
+
+그리고 type속성을 이용하여 이 Blob 객체의 타입이 mp4임을 지정한다.
+
+10.const mp4Url = URL.createObjectURL(mp4Blob)
+URL객체의 createObjectURL 메소드를 호출하여 URL을 생성한다.
+
+11. const a = document.createElement("a") 
+    a.href = mp4Url
+    a.download = "MyRecording.mp4"
+    document.body.appendChild(a); 
+    a.click() 
+    의 목적?
+
+    브라우저에서 다운로드 할 수 있는 링크를 만드는 방법이다.
+    이 코드가 실행되면 "MyRecording.mp4"라는 이름으로 mp4파일이 다운로드 된다.
+
+_______________________________________________________________________________________________    
+"Thumbnail"
+
+1. await ffmpeg.run("-i", "recording.webm", "-ss", "00:00:01", "-frames:v", "1", "thumnail.jpg")의 목적?
+
+"-i" "recording.webm"은 마찬가지로 입력 파일이 "recording.webm"임을 알리는 것이다.
+"-ss"는 입력파일의 시작 지점을 설정하는 옵션으로
+이 경우에는 "-ss" "00:00:01"이므로 입력파일의 시삭 지점을 1초로 지정했다.
+
+"-frames:v" 
+추출할 프레임 수를 지정하는 옵션이다.
+이 경우에는 "-frames:v", "1" 이므로 추출할 프레임 수는 1이다.
+
+즉, 정리하자면 이 코드의 궁긍적인 목적은 썸네일 jpeg를 추출하기 위함이다.
+입력 파일을 설정하고 입력 파일의 시작 지점을 설정한 뒤 그 지점에서 프레임 1개를 추출하여 썸네일 만든다.
+
+이 경우에는 입력 파일의 시작 지점을 1초로 설정하고 그 지점에서 프레임 1개르 추출해서 thumbnail.jpg로 변환했다.
+즉, 영상 시작 장면을 쎔네일로 추출했다는 뜻이다.
+
+2. const thumbFile = ffmpeg.FS("readFile", "thumbnail.jpg");
+   const thumbBlob = new Blob([thumbFile.buffer], {type: "image/jpg"})
+   const thumbUrl = URL.createObjectURL(thumbBlob) 를 설명하시오
+
+1) thumbnail.jpg를 fs시스템을 읽고 uint8array로 thumbFile에 반환했다.
+2) 블롭 객체에 thumbFile의 배열 버퍼를 넣어서 thumbFile의 내용을 Blob객체로 변환한다.
+그 후 type으로 이 BLOB 객체가 jpg 파일이라고 지정한다.
+3) createObjectURL메소드에 블롭 객체를 넣어 URL을 생성한다.
+
+이 url은 쎔네일을 다운로드 하는 과정에서 유용하게 쓰인다.
+
+3. const thumbA = document.createElement("a");
+   thumbA.href = thumbUrl
+   thumbA.download = "MyThumnail.jpg"
+   document.body.appendChild(thumbA)
+   thumbA.click() 를 설명하시오.
+
+    브라우저에서 다운로드 할 수 있는 링크를 만드는 과정이다.
+    코드가 실행되면 MyThumnail.jpg라는 이름으로 jpg 파일이 다운로드 된다.
+
+
+
+4. ffmpeg.FS("unlink", "recording.webm");
+   ffmpeg.FS("unlink", "output.mp4");
+   ffmpeg.FS("unlink", "thumbnail.jpg"); 의 목적은?
+    실행과정에서 생성된 파일을 삭제한다.
+
+5. URL.revokeObjectURL(mp4Url);
+   URL.revokeObjectURL(thumbUrl);
+   URL.revokeObjectURL(videoFile); 의 목적은?
+    실행과정에서 생성된 URL을 제거한다.
+
+4. ffmpeg.FS("unlink", "recording.webm");와 URL.revokeObjectURL(mp4Url);의 궁극적인 목적
+    실행과정에서 새성된 파일과 URL을 제거함으로써 메모리 공간을 효율적으로 사용하여 프로그램의 성능을 개선한다.
+
