@@ -1,56 +1,69 @@
 import { createFFmpeg, fetchFile } from "@ffmpeg/ffmpeg";
-const startBtn = document.getElementById("startBtn")
+const actionBtn = document.getElementById("actionBtn")
 const video = document.getElementById("preview")
 let stream; // 녹화 스트림 변수
 let recorder; // 레코더 변수
 let videoFile; // 비디오 파일 변수
 
+const files = {
+  input: "recording.webm",
+  output: "output.mp4",
+  thumb: "thumbnail.jpg"
+}
+
+const downloadFile = (fileUrl, fileName) => {
+  const a = document.createElement("a")
+  a.href = fileUrl
+  a.download = fileName
+  document.body.appendChild(a)
+  a.click()
+}
+
 const handleDownload= async () => {
-   
+
+    actionBtn.removeEventListener("click", handleDownload)
+    actionBtn.innerText = "TransCoding...";
+    actionBtn.disabled = true;
+
     const ffmpeg = createFFmpeg({
       log:true
     });
 
     await ffmpeg.load()
-    ffmpeg.FS("writeFile", "recording.webm", await fetchFile(videoFile))
-    await ffmpeg.run("-i", "recording.webm", "-r", "60", "output.mp4");
-
-    await ffmpeg.run("-i", "recording.webm", "-ss", "00:00:01", "-frames:v", "1", "thumbnail.jpg")
+    ffmpeg.FS("writeFile", files.input, await fetchFile(videoFile))
+    await ffmpeg.run("-i", files.input, "-r", "60", files.output);
+    await ffmpeg.run("-i", files.input, "-ss", "00:00:01", "-frames:v", "1", files.thumb)
     
-    const mp4File = ffmpeg.FS("readFile", "output.mp4")
-    const thumbFile = ffmpeg.FS("readFile", "thumbnail.jpg");
+    const mp4File = ffmpeg.FS("readFile", files.output)
+    const thumbFile = ffmpeg.FS("readFile", files.thumb);
     
     const mp4Blob = new Blob([mp4File.buffer], {type:"video/mp4"})
     const thumbBlob = new Blob([thumbFile.buffer], {type: "image/jpg"})
     const mp4Url = URL.createObjectURL(mp4Blob)
     const thumbUrl = URL.createObjectURL(thumbBlob)
 
-    const a = document.createElement("a") 
-    a.href = mp4Url
-    a.download = "MyRecording.mp4" 
-    document.body.appendChild(a); 
-    a.click() 
+    downloadFile(mp4Url, "MyRecording.mp4")
+    downloadFile(thumbUrl, "MyThumbnail.jpg")
 
-    const thumbA = document.createElement("a");
-    thumbA.href = thumbUrl
-    thumbA.download = "MyThumnail.jpg"
-    document.body.appendChild(thumbA)
-    thumbA.click()
-
-    ffmpeg.FS("unlink", "recording.webm")
-    ffmpeg.FS("unlink", "output.mp4");
-    ffmpeg.FS("unlink", "thumbnail.jpg");
+    ffmpeg.FS("unlink", files.input)
+    ffmpeg.FS("unlink", files.output);
+    ffmpeg.FS("unlink", files.thumb);
 
     URL.revokeObjectURL(mp4Url)
     URL.revokeObjectURL(thumbUrl)
     URL.revokeObjectURL(videoFile)
+
+    actionBtn.disabled = false;
+    actionBtn.innerText = "Record Again"
+    actionBtn.addEventListener("click", handleStart)
+
 }
 
 const handleStop = () => {
     //stop Recording을 누르면 버튼의 txt가 download recording으로 바뀐다.
-    startBtn.innerText = "Download Recording"
-    startBtn.removeEventListener("click", handleStop)
-    startBtn.addEventListener("click", handleDownload)
+    actionBtn.innerText = "Download Recording"
+    actionBtn.removeEventListener("click", handleStop)
+    actionBtn.addEventListener("click", handleDownload)
     //버튼 클릭 시 발생하는 이벤트도 handleDownload로 바뀐다.
     recorder.stop() 
     // 녹화를 중지하면 최종적으로 ondataavailable 이벤트가 실행되고
@@ -58,9 +71,9 @@ const handleStop = () => {
 } 
 
 const handleStart = async( ) => {
-  startBtn.innerText = "Stop Recording" //start Recording txt가 stop Recording txt로 바뀐다.
-  startBtn.removeEventListener("click", handleStart)
-  startBtn.addEventListener("click", handleStop) // 버튼 클릭 시 발생하는 이벤트도 handleStop으로 바뀐다.
+  actionBtn.innerText = "Stop Recording" //start Recording txt가 stop Recording txt로 바뀐다.
+  actionBtn.removeEventListener("click", handleStart)
+  actionBtn.addEventListener("click", handleStop) // 버튼 클릭 시 발생하는 이벤트도 handleStop으로 바뀐다.
   recorder = new MediaRecorder(stream, {mimeType:"video/webm"})
   // MediaRecorder 객체는 스트림에 캡쳐된 비디오나 오디오를 녹화하기 위해 사용된다.
   // 여기서는 웹캠 비디오 스트림을 녹화하기 위헤 사용되었다.
@@ -97,5 +110,5 @@ const init = async () => {
 }
 
 init()
-startBtn.addEventListener("click", handleStart)
+actionBtn.addEventListener("click", handleStart)
 // 녹화 시작 버튼을  틀릭하면 handleStart가 시작된다.
